@@ -34,3 +34,15 @@ var home_header = Padding(
     ],
   ),
 );
+
+var settingsHeader = Padding(
+  padding: const EdgeInsets.only(top: 50, left: 20),
+  child: Text(
+    "Settings",
+    style: GoogleFonts.workSans(
+      color: Colors.black,
+      fontSize: 30,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+);
