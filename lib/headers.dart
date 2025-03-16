@@ -46,3 +46,15 @@ var settingsHeader = Padding(
     ),
   ),
 );
+
+var accountSettingsHeader = Padding(
+  padding: const EdgeInsets.only(left: 20),
+  child: Text(
+    "Account Settings",
+    style: GoogleFonts.workSans(
+      color: Colors.black,
+      fontSize: 30,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+);
