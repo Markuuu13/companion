@@ -7,3 +7,5 @@ var red = Color(0xFFC64242);
 var orange = Color(0xFFFFAD5C);
 var green = Color(0xFF52BD76);
 var blue = Color(0xFF52A9FF);
+var autoSchedNotAvail = Color(0xFF7FA58C);
+var autoSchedNotAvailTxt = Color(0xFFD2D2D2);
