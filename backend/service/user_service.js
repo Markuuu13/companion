@@ -9,7 +9,7 @@ exports.register = async (req, res) => {
     console.log("Received Body:", req.body); 
 
     try {
-        const {email, password} = req.body;
+        const {firstname, lastname, educationLevel, email, password} = req.body;
 
         const hashedPassword = await bcrypt.hash(password, 8);
 
@@ -27,17 +27,20 @@ exports.register = async (req, res) => {
 
         // creates account
         const {data, error} = await supabase.from("users").insert({
+            firstname,
+            lastname,
+            educationLevel,
             email,
             password: hashedPassword,
         }).select('*');
 
         if(error) {
-            return res.status(404).json({message: "no data", error: error.message});
+            return res.status(400).json({message: "Error occured", error: error.message});
         }
 
         return res.status(200).json({data: data, message: "Account created successfully"});
     } catch (error) {
-        res.status(404).json({error});
+        res.status(500).json({error});
         console.log(error);
     }
 };
@@ -57,14 +60,14 @@ exports.login = async (req, res) => {
 
         // check if the email is existing
         if (error || !data) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(400).json({ message: "User not found" });
         }
 
         // compare the password and the hashed password
         const passwordMatch = await bcrypt.compare(password, data.password)
 
         if(!passwordMatch) {
-            return res.status(401).json({message: "Incorrect Password"});
+            return res.status(400).json({message: "Incorrect Password"});
         }
         // generates JWT token
         const token = jwt.sign(
@@ -79,7 +82,7 @@ exports.login = async (req, res) => {
         );
         return res.status(200).json({ message: "Login successful", token});
     } catch (error) {
-        res.status(404).json({error});
+        res.status(500).json({error});
         console.log(error);
     }
 };

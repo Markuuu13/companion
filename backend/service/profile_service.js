@@ -14,7 +14,7 @@ exports.profile = async (req, res) => {
         console.log("Supabase Response:", data);
 
         if (error || !data) {
-            return res.status(404).json({ message: "User not found in the database" });
+            return res.status(400).json({ message: "User not found in the database" });
         }
 
         const userProfile = {
@@ -22,7 +22,7 @@ exports.profile = async (req, res) => {
             email: data.email,
         }
 
-        return res.status('200').json({ message: "Profile Fetched Successfully", profile: userProfile})
+        return res.status(200).json({ message: "Profile Fetched Successfully", profile: userProfile})
     } catch (error) {
         res.status(500).json({ message: "Something went wrong", error: error.message });
     }
