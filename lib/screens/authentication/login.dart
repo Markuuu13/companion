@@ -19,11 +19,45 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  bool isToastVisible = false;
+
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    isToastVisible = false;
     super.dispose();
+  }
+
+  void login() {
+    try {
+      bool isEmpty =
+          emailController.text.trim().isEmpty ||
+          passwordController.text.trim().isEmpty;
+
+      if (isEmpty) {
+        if (!isToastVisible) {
+          isToastVisible = true;
+
+          showErrorToast(context, "Please fill all fields");
+
+          Future.delayed(Duration(seconds: 2), () {
+            isToastVisible = false;
+          });
+        }
+        return;
+      }
+
+      // Get.to(
+      //   () => EmailSignup(
+      //     firstname: firstname.text.trim(),
+      //     lastname: lastname.text.trim(),
+      //     educationLevel: selectedValue!,
+      //   ),
+      //   transition: Transition.fade,
+      //   duration: Duration(milliseconds: 600),
+      // );
+    } catch (e) {}
   }
 
   @override
@@ -74,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: InkWell(
-                      onTap: () => Get.off(() => Navigation( )),
+                      onTap: login,
                       child: Container(
                         padding: EdgeInsets.all(15),
                         width: MediaQuery.sizeOf(context).width * 0.9,

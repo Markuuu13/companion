@@ -1,5 +1,8 @@
+import 'package:cherry_toast/cherry_toast.dart';
+import 'package:cherry_toast/resources/arrays.dart';
 import 'package:companion/constants.dart';
 import 'package:companion/screens/authentication/email_signup.dart';
+import 'package:companion/service/app_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,9 +20,77 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final TextEditingController firstname = TextEditingController();
   final TextEditingController lastname = TextEditingController();
+  AppService appService = AppService();
 
-  String? stringValue;
-  List<String> items = ["Apple", "Banana", "Cherry"];
+  String? selectedValue;
+  List<dynamic> educationLevels = [];
+  bool isToastVisible = false;
+
+  void next() {
+    try {
+      bool isEmpty =
+          firstname.text.trim().isEmpty ||
+          lastname.text.trim().isEmpty ||
+          selectedValue == null;
+
+      if (isEmpty) {
+        if (!isToastVisible) {
+          isToastVisible = true;
+
+          showErrorToast(context, "Please fill all fields");
+
+          Future.delayed(Duration(seconds: 2), () {
+            isToastVisible = false;
+          });
+        }
+        return;
+      }
+
+      Get.to(
+        () => EmailSignup(
+          firstname: firstname.text.trim(),
+          lastname: lastname.text.trim(),
+          educationLevel: selectedValue!,
+        ),
+        transition: Transition.fade,
+        duration: Duration(milliseconds: 600),
+      );
+    } catch (e) {
+      showErrorToast(context, e.toString());
+    }
+  }
+
+  void loadEducationLevel() async {
+    try {
+      List<dynamic> data = await appService.fetchEducationLevel();
+      print("Fetched Data: $data");
+      setState(() {
+        educationLevels =
+            data
+                .map<String>((item) => item['grade'].toString())
+                .toSet()
+                .toList();
+      });
+    } catch (e) {
+      print('Error fetching education levels: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadEducationLevel();
+  }
+
+  @override
+  void dispose() {
+    isToastVisible = false;
+    firstname.dispose();
+    lastname.dispose();
+    selectedValue = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +105,9 @@ class _SignupPageState extends State<SignupPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               IconButton(
-                onPressed: () => Get.back(),
+                onPressed: () {
+                  Get.back();
+                },
                 icon: Icon(Icons.arrow_back, color: Colors.white),
               ),
               SizedBox(height: 20),
@@ -70,6 +143,8 @@ class _SignupPageState extends State<SignupPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: DropdownButtonFormField(
+                  value: selectedValue,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
                   hint: Text("Select your Education Level"),
                   decoration: InputDecoration(
                     filled: true,
@@ -83,12 +158,16 @@ class _SignupPageState extends State<SignupPage> {
                   dropdownColor: Colors.white,
                   icon: Icon(Icons.arrow_drop_down, color: Colors.blue),
                   items:
-                      items.map((String item) {
-                        return DropdownMenuItem(value: item, child: Text(item));
+                      educationLevels.map((dynamic value) {
+                        return DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        );
                       }).toList(),
-                  onChanged: (String? newValue) {
+
+                  onChanged: (dynamic newValue) {
                     setState(() {
-                      stringValue = newValue;
+                      selectedValue = newValue;
                     });
                   },
                 ),
@@ -97,16 +176,7 @@ class _SignupPageState extends State<SignupPage> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: InkWell(
-                    onTap:
-                        () => Get.to(
-                          () => EmailSignup(
-                            firstname: firstname.text.trim(),
-                            lastname: lastname.text.trim(),
-                            educationLevel: stringValue!,
-                          ),
-                          transition: Transition.fade,
-                          duration: Duration(milliseconds: 600),
-                        ),
+                    onTap: next,
                     child: Container(
                       padding: EdgeInsets.all(15),
                       width: MediaQuery.sizeOf(context).width * 0.9,
