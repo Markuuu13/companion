@@ -1,6 +1,8 @@
 const router = require('express').Router();
-const { getEducationLevel } = require('../service/app_service');
+const { getGradeLevel } = require('../service/app_service');
+const { getEducationLevel } = require('../service/app_service');    
 
-router.get('/educationlevel', getEducationLevel);
+router.get('/gradelevel', getGradeLevel);
+router.get('/educationlevel', getEducationLevel);   
 
 module.exports = router;

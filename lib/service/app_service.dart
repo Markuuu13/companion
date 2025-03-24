@@ -2,18 +2,22 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-class AppService {
-  var backendUrl = 'http://192.168.0.104:3500';
+import '../constants.dart';
 
-  Future<List<dynamic>> fetchEducationLevel() async {
+class AppService {
+
+  Future<List<String>> fetchEducationLevel() async {
     try {
       final response = await http.get(
-        Uri.parse('${backendUrl}/educationlevel'),
+        Uri.parse('$backendUrl/educationlevel'),
       );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        return responseData['data'];
+        final responseData = jsonDecode(response.body);
+        List<dynamic> data = responseData['data'];
+        List<String> grades = data.map<String>((item) => item['educationLevel'].toString()).toList();
+
+        return grades;
       } else {
         print("Error: ${response.statusCode} - ${response.body}");
         return []; // Return empty list if status code is not 200

@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
 
 class AuthService {
-  final backendUrl = 'http://192.168.0.104:3500';
+  final backendUrl = 'http://192.168.0.108:3500';
 
   void signUp({
     required BuildContext context,

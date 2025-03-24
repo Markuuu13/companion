@@ -23,7 +23,7 @@ class _SignupPageState extends State<SignupPage> {
   AppService appService = AppService();
 
   String? selectedValue;
-  List<dynamic> educationLevels = [];
+  List<String> educationLevels = [];
   bool isToastVisible = false;
 
   void next() {
@@ -60,16 +60,12 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
-  void loadEducationLevel() async {
+  Future<void> loadEducationLevel() async {
     try {
-      List<dynamic> data = await appService.fetchEducationLevel();
+      List<String> data = await appService.fetchEducationLevel();
       print("Fetched Data: $data");
       setState(() {
-        educationLevels =
-            data
-                .map<String>((item) => item['grade'].toString())
-                .toSet()
-                .toList();
+        educationLevels = data;
       });
     } catch (e) {
       print('Error fetching education levels: $e');
@@ -158,14 +154,47 @@ class _SignupPageState extends State<SignupPage> {
                   dropdownColor: Colors.white,
                   icon: Icon(Icons.arrow_drop_down, color: Colors.blue),
                   items:
-                      educationLevels.map((dynamic value) {
+                      educationLevels.map((String value) {
                         return DropdownMenuItem(
                           value: value,
                           child: Text(value),
                         );
                       }).toList(),
 
-                  onChanged: (dynamic newValue) {
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedValue = newValue;
+                    });
+                  },
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: DropdownButtonFormField(
+                  value: selectedValue,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  hint: Text("Select your Education Level"),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                        50,
+                      ), // Rounded corners
+                    ),
+                  ),
+                  dropdownColor: Colors.white,
+                  icon: Icon(Icons.arrow_drop_down, color: Colors.blue),
+                  items:
+                      educationLevels.map((String value) {
+                        return DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+
+                  onChanged: (newValue) {
                     setState(() {
                       selectedValue = newValue;
                     });
