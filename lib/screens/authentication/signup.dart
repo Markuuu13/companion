@@ -22,8 +22,14 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController lastname = TextEditingController();
   AppService appService = AppService();
 
-  String? selectedValue;
-  List<String> educationLevels = [];
+  String? selectedEducationLevel;
+  String? selectedGrade;
+
+  List<dynamic> educationLevels = [];
+  List<dynamic> primaryEducGradeLevel = [];
+  List<dynamic> secondaryEducGradeLevel = [];
+  List<dynamic> tertiaryEducGradeLevel = [];
+
   bool isToastVisible = false;
 
   void next() {
@@ -31,7 +37,7 @@ class _SignupPageState extends State<SignupPage> {
       bool isEmpty =
           firstname.text.trim().isEmpty ||
           lastname.text.trim().isEmpty ||
-          selectedValue == null;
+          selectedEducationLevel == null;
 
       if (isEmpty) {
         if (!isToastVisible) {
@@ -50,7 +56,7 @@ class _SignupPageState extends State<SignupPage> {
         () => EmailSignup(
           firstname: firstname.text.trim(),
           lastname: lastname.text.trim(),
-          educationLevel: selectedValue!,
+          educationLevel: selectedEducationLevel!,
         ),
         transition: Transition.fade,
         duration: Duration(milliseconds: 600),
@@ -60,23 +66,14 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
-  Future<void> loadEducationLevel() async {
-    try {
-      List<String> data = await appService.fetchEducationLevel();
-      print("Fetched Data: $data");
-      setState(() {
-        educationLevels = data;
-      });
-    } catch (e) {
-      print('Error fetching education levels: $e');
-    }
-  }
-
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     loadEducationLevel();
+    loadPrimaryEducGradeLevel();
+    loadSecondaryEducGradeLevel();
+    loadTertiaryEducGradeLevel();
+    super.initState();
   }
 
   @override
@@ -84,7 +81,7 @@ class _SignupPageState extends State<SignupPage> {
     isToastVisible = false;
     firstname.dispose();
     lastname.dispose();
-    selectedValue = null;
+    selectedEducationLevel = null;
     super.dispose();
   }
 
@@ -136,16 +133,18 @@ class _SignupPageState extends State<SignupPage> {
               SizedBox(height: 20),
               TextfieldRegister(labeltext: 'Last name', controller: lastname),
               SizedBox(height: 20),
+              // Text(educationLevels.toString()),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: DropdownButtonFormField(
-                  value: selectedValue,
+                  value: selectedEducationLevel,
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   hint: Text("Select your Education Level"),
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(
                         50,
                       ), // Rounded corners
@@ -154,53 +153,77 @@ class _SignupPageState extends State<SignupPage> {
                   dropdownColor: Colors.white,
                   icon: Icon(Icons.arrow_drop_down, color: Colors.blue),
                   items:
-                      educationLevels.map((String value) {
+                      educationLevels.map<DropdownMenuItem>((dynamic value) {
                         return DropdownMenuItem(
-                          value: value,
-                          child: Text(value),
+                          value: value.toString(),
+                          child: Text(value.toString()),
                         );
                       }).toList(),
 
                   onChanged: (newValue) {
                     setState(() {
-                      selectedValue = newValue;
+                      selectedEducationLevel = newValue;
                     });
                   },
                 ),
               ),
               SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: DropdownButtonFormField(
-                  value: selectedValue,
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  hint: Text("Select your Education Level"),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        50,
-                      ), // Rounded corners
+              if (selectedEducationLevel != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: DropdownButtonFormField(
+                    value: selectedGrade,
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    hint: Text("Select your Education Level"),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(
+                          50,
+                        ), // Rounded corners
+                      ),
                     ),
-                  ),
-                  dropdownColor: Colors.white,
-                  icon: Icon(Icons.arrow_drop_down, color: Colors.blue),
-                  items:
-                      educationLevels.map((String value) {
-                        return DropdownMenuItem(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
+                    dropdownColor: Colors.white,
+                    icon: Icon(Icons.arrow_drop_down, color: Colors.blue),
+                    items:
+                        selectedEducationLevel == 'Primary Education'
+                            ? primaryEducGradeLevel.map<DropdownMenuItem>((
+                              dynamic value,
+                            ) {
+                              return DropdownMenuItem(
+                                value: value.toString(),
+                                child: Text(value.toString()),
+                              );
+                            }).toList()
+                            : selectedEducationLevel == 'Secondary Education'
+                            ? secondaryEducGradeLevel.map<DropdownMenuItem>((
+                              dynamic value,
+                            ) {
+                              return DropdownMenuItem(
+                                value: value.toString(),
+                                child: Text(value.toString()),
+                              );
+                            }).toList()
+                            : selectedEducationLevel == 'Tertiary Education'
+                            ? tertiaryEducGradeLevel.map<DropdownMenuItem>((
+                              dynamic value,
+                            ) {
+                              return DropdownMenuItem(
+                                value: value.toString(),
+                                child: Text(value.toString()),
+                              );
+                            }).toList()
+                            : null,
 
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedValue = newValue;
-                    });
-                  },
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedGrade = newValue;
+                      });
+                    },
+                  ),
                 ),
-              ),
               Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -234,5 +257,50 @@ class _SignupPageState extends State<SignupPage> {
         ),
       ),
     );
+  }
+
+  Future<void> loadEducationLevel() async {
+    try {
+      List<dynamic> data = await appService.fetchEducationLevel(context);
+      print("Fetched Data: $data");
+      setState(() {
+        educationLevels = data;
+      });
+    } catch (e) {
+      print('Error fetching education levels: $e');
+    }
+  }
+
+  Future<void> loadPrimaryEducGradeLevel() async {
+    try {
+      List<dynamic> data = await appService.fetchPrimaryEducationLevels(context);
+      setState(() {
+        primaryEducGradeLevel = data;
+      });
+    } catch (e) {
+      print('Error fetching grades: $e');
+    }
+  }
+
+  Future<void> loadSecondaryEducGradeLevel() async {
+    try {
+      List<dynamic> data = await appService.fetchSecondaryEducationLevels(context);
+      setState(() {
+        secondaryEducGradeLevel = data;
+      });
+    } catch (e) {
+      print('Error fetching grades: $e');
+    }
+  }
+
+  Future<void> loadTertiaryEducGradeLevel() async {
+    try {
+      List<dynamic> data = await appService.fetchTertiaryEducationLevels(context);
+      setState(() {
+        tertiaryEducGradeLevel = data;
+      });
+    } catch (e) {
+      print('Error fetching grades: $e');
+    }
   }
 }

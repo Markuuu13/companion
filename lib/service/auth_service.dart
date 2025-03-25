@@ -3,10 +3,10 @@ import 'package:companion/components/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../constants.dart';
 import '../models/user_model.dart';
 
 class AuthService {
-  final backendUrl = 'http://192.168.0.108:3500';
 
   void signUp({
     required BuildContext context,
@@ -28,7 +28,7 @@ class AuthService {
       );
 
       var response = await http.post(
-        Uri.parse('${backendUrl}/registration'),
+        Uri.parse('$backendUrl/registration'),
         body: user.toJson(),
         headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
@@ -61,5 +61,9 @@ class AuthService {
     } catch (e) {
       print(e);
     }
+  }
+
+  void signIn() {
+    
   }
 }
