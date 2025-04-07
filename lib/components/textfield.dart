@@ -12,10 +12,13 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
+      padding: const EdgeInsets.symmetric(horizontal: 35),
       child: TextField(
         controller: controller,
-        decoration: InputDecoration(labelText: labeltext),
+        decoration: InputDecoration(
+          labelText: labeltext,
+          contentPadding: EdgeInsets.only(left: 8, bottom: 10),
+        ),
       ),
     );
   }

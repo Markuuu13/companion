@@ -1,4 +1,5 @@
 import 'package:companion/screens/authentication/login.dart';
+import 'package:companion/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +9,19 @@ import '../../constants.dart';
 import 'setpassword.dart';
 
 class VerifyEmail extends StatefulWidget {
-  const VerifyEmail({super.key});
+  final String firstname;
+  final String lastname;
+  final String email;
+  final String educationLevel;
+  final String password;
+  const VerifyEmail({
+    super.key,
+    required this.firstname,
+    required this.lastname,
+    required this.email,
+    required this.educationLevel,
+    required this.password,
+  });
 
   @override
   State<VerifyEmail> createState() => _VerifyEmailState();
@@ -17,12 +30,34 @@ class VerifyEmail extends StatefulWidget {
 class _VerifyEmailState extends State<VerifyEmail> {
   final TextEditingController verifyOtp = TextEditingController();
 
+  AuthService authService = AuthService();
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     verifyOtp.dispose();
   }
+
+  void signUp(
+    String email,
+    String firstname,
+    String lastname,
+    String password,
+    String educationLevel,
+  ) {
+    try {
+      authService.signUp(
+        context: context,
+        email: email,
+        firstname: firstname,
+        lastname: lastname,
+        password: password,
+        educationLevel: educationLevel,
+        otp: verifyOtp.text.trim(),
+      );
+    } catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -61,10 +96,31 @@ class _VerifyEmailState extends State<VerifyEmail> {
                         color: Colors.white,
                       ),
                     ),
+                    SizedBox(height: 30),
+                    Text(
+                      "OTP code sent to:",
+                      overflow: TextOverflow.clip,
+                      style: GoogleFonts.workSans(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      widget.email,
+                      overflow: TextOverflow.clip,
+                      style: GoogleFonts.workSans(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 20),
               TextfieldRegister(
                 labeltext: 'Enter the 6 digit code',
                 controller: verifyOtp,
@@ -75,11 +131,14 @@ class _VerifyEmailState extends State<VerifyEmail> {
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: InkWell(
                     onTap:
-                        () => Get.offAll(
-                          () => LoginPage(),
-                          transition: Transition.fade,
-                          duration: Duration(milliseconds: 600),
+                        () => signUp(
+                          widget.email,
+                          widget.firstname,
+                          widget.lastname,
+                          widget.password,
+                          widget.educationLevel,
                         ),
+
                     child: Container(
                       padding: EdgeInsets.all(15),
                       width: MediaQuery.sizeOf(context).width * 0.9,
@@ -92,7 +151,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
                       ),
                       child: Text(
                         "Verify my Email",
-                        style: TextStyle(
+                        style: GoogleFonts.workSans(
                           color: mainColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 15,

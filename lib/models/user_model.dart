@@ -9,6 +9,7 @@ class User {
   final String token;
   final String password;
   final String educationLevel;
+  final String otp;
 
   User({
     required this.id,
@@ -18,6 +19,7 @@ class User {
     required this.token,
     required this.password,
     required this.educationLevel,
+    required this.otp,
   });
 
   Map<String, dynamic> toMap() {
@@ -40,7 +42,8 @@ class User {
       lastname: map['lastname'] as String,
       token: map['token'] as String,
       password: map['password'] as String,
-      educationLevel: map['educationLevel'] as String, 
+      educationLevel: map['educationLevel'] as String,
+      otp:  map['otp'] as String,
     );
   }
 

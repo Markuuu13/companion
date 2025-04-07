@@ -163,6 +163,7 @@ class _SignupPageState extends State<SignupPage> {
                   onChanged: (newValue) {
                     setState(() {
                       selectedEducationLevel = newValue;
+                      selectedGrade = null;
                     });
                   },
                 ),
@@ -194,7 +195,8 @@ class _SignupPageState extends State<SignupPage> {
                             ) {
                               return DropdownMenuItem(
                                 value: value.toString(),
-                                child: Text(value.toString()),
+                                
+                                child: Text(value.toString(), style: GoogleFonts.workSans(),),
                               );
                             }).toList()
                             : selectedEducationLevel == 'Secondary Education'
@@ -220,6 +222,7 @@ class _SignupPageState extends State<SignupPage> {
                     onChanged: (newValue) {
                       setState(() {
                         selectedGrade = newValue;
+                        
                       });
                     },
                   ),

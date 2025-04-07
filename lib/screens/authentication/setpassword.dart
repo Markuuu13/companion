@@ -52,6 +52,7 @@ class _SetPasswordState extends State<SetPassword> {
       lastname: lastname,
       password: password,
       educationLevel: educationLevel,
+      otp: '',
     );
   }
 

@@ -4,7 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../components/textfield_register.dart';
 import '../../constants.dart';
+import '../../service/auth_service.dart';
 import 'setpassword.dart';
+import 'verifyemail.dart';
 
 class EmailSignup extends StatefulWidget {
   final String firstname;
@@ -26,9 +28,56 @@ class _EmailSignupState extends State<EmailSignup> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-
+  AuthService authService = AuthService();
   bool isChecked = false;
   bool isObscure = true;
+
+  void verifyUserEmail(
+    String emailAddress,
+    String firstname,
+    String lastname,
+    String educationLevel,
+    String password,
+  ) async {
+    if (passwordController.text.trim() !=
+        confirmPasswordController.text.trim()) {
+      showErrorToast(context, "Passwords doesn't match");
+      return;
+    }
+    if (passwordController.text.trim().isEmpty ||
+        confirmPasswordController.text.trim().isEmpty) {
+      showErrorToast(context, "Password required");
+      return;
+    }
+
+    try {
+      bool isExistingUser = await authService.isExistingUser(
+        context,
+        emailController.text.trim(),
+      );
+      if (isExistingUser) {
+        return;
+      }
+      bool sendEmail = await authService.sendOTP(
+        context,
+        emailController.text.trim(),
+      );
+      print(sendEmail);
+      if (sendEmail) {
+        Get.to(
+          () => VerifyEmail(
+            email: emailAddress,
+            firstname: firstname,
+            lastname: lastname,
+            educationLevel: educationLevel,
+            password: passwordController.text.trim(),
+          ),
+        );
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   @override
   void dispose() {
@@ -130,15 +179,12 @@ class _EmailSignupState extends State<EmailSignup> {
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: InkWell(
                     onTap:
-                        () => Get.to(
-                          () => SetPassword(
-                            firstname: widget.firstname,
-                            lastname: widget.lastname,
-                            educationLevel: widget.educationLevel,
-                            emailAddress: emailController.text.trim(),
-                          ),
-                          transition: Transition.fade,
-                          duration: Duration(milliseconds: 600),
+                        () => verifyUserEmail(
+                          emailController.text.trim(),
+                          widget.firstname,
+                          widget.lastname,
+                          widget.educationLevel,
+                          passwordController.text.trim(),
                         ),
                     child: Container(
                       padding: EdgeInsets.all(15),
@@ -163,9 +209,7 @@ class _EmailSignupState extends State<EmailSignup> {
                   ),
                 ),
               ),
-              Text(
-                "${widget.firstname}, ${widget.lastname}, ${widget.educationLevel}",
-              ),
+              
             ],
           ),
         ),

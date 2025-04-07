@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-var backendUrl = 'http://192.168.0.110:3500';
-
+var backendUrl = 'http://192.168.0.116:3500';
 
 var mainColor = Color(0xFFFF7559);
 var completeColor = Color(0xFF5BEF8D);
@@ -21,10 +20,14 @@ var autoSchedNotAvailTxt = Color(0xFFD2D2D2);
 
 void showSuccessToast(BuildContext context, String message) {
   CherryToast.info(
-    title: Text(message, style: TextStyle(color: Colors.black)),
-
-    action: Text("Display information", style: TextStyle(color: Colors.black)),
-
+    autoDismiss: true,
+    toastDuration: Duration(seconds: 2, milliseconds: 500),
+    toastPosition: Position.bottom,
+    animationDuration: Duration(milliseconds: 500),
+    animationType: AnimationType.fromBottom,
+    title: Text(message, style: GoogleFonts.workSans(color: Colors.black)),
+    iconWidget: Icon(Icons.error, color: Colors.lightGreen),
+    displayCloseButton: false,
     actionHandler: () {
       print("Action button pressed");
     },
@@ -34,7 +37,7 @@ void showSuccessToast(BuildContext context, String message) {
 void showErrorToast(BuildContext context, String message) {
   CherryToast.info(
     autoDismiss: true,
-    toastDuration: Duration(seconds: 1, milliseconds: 500),
+    toastDuration: Duration(seconds: 2, milliseconds: 500),
     toastPosition: Position.bottom,
     animationDuration: Duration(milliseconds: 500),
     animationType: AnimationType.fromBottom,
@@ -46,5 +49,3 @@ void showErrorToast(BuildContext context, String message) {
     },
   ).show(context);
 }
-
-

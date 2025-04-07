@@ -1,10 +1,12 @@
 import 'package:companion/components/navigation.dart';
 import 'package:companion/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../components/textfield.dart';
+import '../../service/auth_service.dart';
 import 'forgot_password.dart';
 import 'signup.dart';
 
@@ -18,7 +20,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  AuthService authService = AuthService();
   bool isToastVisible = false;
 
   @override
@@ -29,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void login() {
+  void login() async {
     try {
       bool isEmpty =
           emailController.text.trim().isEmpty ||
@@ -48,6 +50,17 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
+      bool successLogin = await authService.signIn(
+        context: context,
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      if (successLogin) {
+        Get.offAll(() => Navigation());
+      } else {
+        showErrorToast(context, "Invalid email or password. Please try again.");
+      }
       // Get.to(
       //   () => EmailSignup(
       //     firstname: firstname.text.trim(),
@@ -57,7 +70,9 @@ class _LoginPageState extends State<LoginPage> {
       //   transition: Transition.fade,
       //   duration: Duration(milliseconds: 600),
       // );
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   @override
@@ -74,6 +89,19 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 30),
+                  //   child: Text(
+                  //     "What is CompAInion?",
+                  //     textAlign: TextAlign.center,
+                  //     style: GoogleFonts.workSans(
+                  //       fontSize: 15,
+                  //       fontWeight: FontWeight.w500,
+                  //       color: mainColor,
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(height: 50),
                   Image.asset("assets/companion_logo.png", width: 250),
                   SizedBox(height: 60),
                   CustomTextField(
@@ -89,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(top: 10, right: 20),
+                        padding: const EdgeInsets.only(top: 10, right: 35),
                         child: GestureDetector(
                           onTap: () {
                             Get.to(() => ForgotPasswordPage());
@@ -106,12 +134,12 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     child: InkWell(
                       onTap: login,
                       child: Container(
-                        padding: EdgeInsets.all(15),
-                        width: MediaQuery.sizeOf(context).width * 0.9,
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        width: MediaQuery.sizeOf(context).width * 0.83,
                         decoration: BoxDecoration(
                           color: mainColor,
                           borderRadius: BorderRadius.only(
@@ -124,6 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
+                            fontSize: 20,
                           ),
                           textAlign: TextAlign.center,
                         ),
