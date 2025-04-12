@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const jwtSecret = process.env.JWT_SECRET;
+const refreshToken = process.env.JWT_REFRESH_TOKEN;
 // For creating account
 exports.register = async (req, res) => {
 
@@ -77,7 +78,7 @@ exports.login = async (req, res) => {
         // get all the emails
         const { data, error } = await supabase
             .from('users')
-            .select("user_id, email, password")
+            .select("user_id, *")
             .eq('email', email)
             .single();
 
@@ -93,26 +94,36 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: "Incorrect Password" });
         }
         // generates JWT token
-        const token = jwt.sign(
-            {
-                user_id: data.user_id,
-                email: data.email,
-            },
-            jwtSecret,
-            {
-                expiresIn: "1m"
-            }
-        );
+        // const token = jwt.sign(
+        //     {
+        //         user_id: data.user_id,
+        //         email: data.email,
+        //     },
+        //     jwtSecret,
+        //     {
+        //         expiresIn: "1m"
+        //     }
+        // );
 
-        //refresh token
-        const refreshToken = jwt.sign({
-            user_id: data.user_id,
+        // //refresh token
+        // const refresh_Token = jwt.sign({
+        //     user_id: data.user_id,
+        // }, refreshToken, {
+        //     expiresIn: "5m"
+        // });
 
-        }, process.env.JWT_REFRESH_SECRET, {
-            expiresIn: "7d"
-        });
+        // // store the refresh token in the database
+        // const {error: refreshError} = await supabase
+        //     .from('users')
+        //     .update({refresh_token: refresh_Token})
+        //     .eq('user_id', data.user_id);
 
-        return res.status(200).json({ message: "Login successful", token });
+        // if(refreshError) {
+        //     console.error("Error storing refresh token:", refresh_Token.message);
+        //     return res.status(500).json({messsage: "Error occured when storing the refresh token"})
+        // }
+
+        return res.status(200).json({ message: "Login successful", data});
     } catch (error) {
         res.status(500).json({ error });
         console.log(error);

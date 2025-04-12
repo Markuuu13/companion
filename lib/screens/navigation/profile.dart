@@ -1,6 +1,9 @@
 import 'package:companion/constants.dart';
+import 'package:companion/service/auth_service.dart';
 import 'package:companion/service/protected_service.dart';
+import 'package:companion/service/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Profile extends StatefulWidget {
@@ -11,25 +14,26 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  ProtectedService protectedService = ProtectedService();
-
+  final UserService userService = UserService();
   Map<String, dynamic>? userProfile;
-
-  void fetchUserProfile() async {
-    var response = await protectedService.fetchUserProfile();
-    if (response != null) {
-      setState(() {
-        userProfile = response;
-      });
-    } else {
-      print("Failed to fetch user profile");
-    }
-  }
-
+  final box = GetStorage();
   @override
   void initState() {
     super.initState();
-    fetchUserProfile();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    final userId = box.read('userid');
+    try {
+      final details = await userService.fetchUserDetails(userId);
+      print(details);
+      setState(() {
+        userProfile = details;
+      });
+    } catch (e) {
+      print("Error fetching user profile: $e");
+    }
   }
 
   @override
@@ -45,9 +49,6 @@ class _ProfileState extends State<Profile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        '${userProfile!['firstname']} ${userProfile!['lastname']} ${userProfile!['email']}',
-                      ),
                       Container(
                         width: double.infinity,
                         height: 350,
@@ -65,7 +66,7 @@ class _ProfileState extends State<Profile> {
                       ),
                       // Name
                       Text(
-                        "Mark Cardeno",
+                        "${userProfile!['firstname']} ${userProfile!['lastname']}",
                         style: GoogleFonts.workSans(
                           color: Colors.black,
                           fontSize: 16,
@@ -83,10 +84,10 @@ class _ProfileState extends State<Profile> {
                       ),
                       // Name
                       Text(
-                        "markcardeno04@gmail.com",
+                        userProfile!['email'],
                         style: GoogleFonts.workSans(
                           color: Colors.black,
-                          fontSize: 20,
+                          fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -101,7 +102,7 @@ class _ProfileState extends State<Profile> {
                       ),
                       // Name
                       Text(
-                        "College 3rd Year",
+                        userProfile!['educationLevel'],
                         style: GoogleFonts.workSans(
                           color: Colors.black,
                           fontSize: 16,

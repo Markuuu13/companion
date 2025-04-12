@@ -12,9 +12,12 @@ import 'package:http/http.dart' as http;
 
 import '../constants.dart';
 import '../models/user_model.dart';
+import 'user_service.dart';
 
 class AuthService {
   final box = GetStorage();
+  Map<String, dynamic>? userDetails;
+  int? userId;
 
   void signUp({
     required BuildContext context,
@@ -96,6 +99,37 @@ class AuthService {
     }
   }
 
+  // Future<bool> signIn({
+  //   required BuildContext context,
+  //   required String email,
+  //   required String password,
+  // }) async {
+  //   try {
+  //     var response = await http.post(
+  //       Uri.parse('$backendUrl/login'),
+  //       body: jsonEncode({'email': email, 'password': password}),
+  //       headers: <String, String>{
+  //         "Content-Type": "application/json; charset=UTF-8",
+  //       },
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body);
+  //       String token = data['token'];
+
+  //       print("token: $token");
+
+  //       box.write('token', token);
+  //       return true;
+  //     } else {
+  //       print(jsonDecode(response.body)['message']);
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     print(e.toString());
+  //     return false;
+  //   }
+  // }
   Future<bool> signIn({
     required BuildContext context,
     required String email,
@@ -112,11 +146,12 @@ class AuthService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        String token = data['token'];
-
-        print("token: $token");
-
-        box.write('token', token);
+        userId = data['data']['user_id'];
+        
+        // final userdata = UserService().fetchUserDetails(userId);
+        box.write('userid', userId);
+        print(userId);
+        // print(userDetails);
         return true;
       } else {
         print(jsonDecode(response.body)['message']);
@@ -127,6 +162,16 @@ class AuthService {
       return false;
     }
   }
+
+  // void loadUserFromStorage() async {
+  //   final userId = box.read("userid");
+  //   if (userId != null) {
+  //     userDetails = await UserService().fetchUserDetails(userId);
+  //     print("Loaded user from storage: $userId");
+  //   } else {
+  //     print("No user found in storage");
+  //   }
+  // }
 
   Future<bool> sendOTP(BuildContext context, String email) async {
     try {

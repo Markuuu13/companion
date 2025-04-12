@@ -42,7 +42,7 @@ class _NavigationState extends State<Navigation> {
         ),
       ),
       drawer: Drawer(
-        backgroundColor: mainColor,
+        backgroundColor: Colors.white,
         child: ListView(
           children: [
             Padding(
@@ -83,7 +83,7 @@ class _NavigationState extends State<Navigation> {
               () => ListTile(
                 tileColor:
                     navigationController.selectedIndex.value == 0
-                        ? Colors.white.withOpacity(0.2)
+                        ? Colors.deepOrange[100]
                         : Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0),
@@ -96,7 +96,7 @@ class _NavigationState extends State<Navigation> {
                   Icons.home,
                   color:
                       navigationController.selectedIndex.value == 0
-                          ? Colors.white
+                          ? Colors.deepOrange
                           : Colors.deepOrange[200],
                 ),
                 title: Text(
@@ -104,10 +104,10 @@ class _NavigationState extends State<Navigation> {
                   style: GoogleFonts.workSans(
                     color:
                         navigationController.selectedIndex.value == 0
-                            ? Colors.white
+                            ? Colors.deepOrange
                             : Colors.deepOrange[200],
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -119,7 +119,7 @@ class _NavigationState extends State<Navigation> {
               () => ListTile(
                 tileColor:
                     navigationController.selectedIndex.value == 1
-                        ? Colors.white.withOpacity(0.2)
+                        ? Colors.deepOrange[100]
                         : Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0),
@@ -132,7 +132,7 @@ class _NavigationState extends State<Navigation> {
                   Icons.person,
                   color:
                       navigationController.selectedIndex.value == 1
-                          ? Colors.white
+                          ? Colors.deepOrange
                           : Colors.deepOrange[200],
                 ),
                 title: Text(
@@ -140,10 +140,10 @@ class _NavigationState extends State<Navigation> {
                   style: GoogleFonts.workSans(
                     color:
                         navigationController.selectedIndex.value == 1
-                            ? Colors.white
+                            ? Colors.deepOrange
                             : Colors.deepOrange[200],
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -155,7 +155,7 @@ class _NavigationState extends State<Navigation> {
               () => ListTile(
                 tileColor:
                     navigationController.selectedIndex.value == 2
-                        ? Colors.white.withOpacity(0.2)
+                        ? Colors.deepOrange[100]
                         : Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0),
@@ -168,7 +168,7 @@ class _NavigationState extends State<Navigation> {
                   Icons.hearing_outlined,
                   color:
                       navigationController.selectedIndex.value == 2
-                          ? Colors.white
+                          ? Colors.deepOrange
                           : Colors.deepOrange[200],
                 ),
                 title: Text(
@@ -176,10 +176,10 @@ class _NavigationState extends State<Navigation> {
                   style: GoogleFonts.workSans(
                     color:
                         navigationController.selectedIndex.value == 2
-                            ? Colors.white
+                            ? Colors.deepOrange
                             : Colors.deepOrange[200],
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -191,7 +191,7 @@ class _NavigationState extends State<Navigation> {
               () => ListTile(
                 tileColor:
                     navigationController.selectedIndex.value == 3
-                        ? Colors.white.withOpacity(0.2)
+                        ? Colors.deepOrange[100]
                         : Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0),
@@ -204,7 +204,7 @@ class _NavigationState extends State<Navigation> {
                   Icons.settings,
                   color:
                       navigationController.selectedIndex.value == 3
-                          ? Colors.white
+                          ? Colors.deepOrange
                           : Colors.deepOrange[200],
                 ),
                 title: Text(
@@ -212,10 +212,10 @@ class _NavigationState extends State<Navigation> {
                   style: GoogleFonts.workSans(
                     color:
                         navigationController.selectedIndex.value == 3
-                            ? Colors.white
+                            ? Colors.deepOrange
                             : Colors.deepOrange[200],
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
