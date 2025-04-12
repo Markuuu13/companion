@@ -2,17 +2,28 @@ import 'package:companion/screens/authentication/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'components/navigation.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); 
+  await GetStorage.init();
+  final box = GetStorage();
+  final userId = box.read('userid');
+
+  runApp(MyApp(userId: userId));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final dynamic userId;
+  const MyApp({super.key, required this.userId});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    
+
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.white, // Background color
@@ -25,7 +36,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: LoginPage(),
+      home: userId != null ? Navigation() : LoginPage(),
     );
   }
 }

@@ -32,12 +32,25 @@ class _NavigationState extends State<Navigation> {
         child: Stack(
           children: [
             Obx(() => pages[navigationController.selectedIndex.value]),
-            IconButton(
-              onPressed: () {
-                scaffoldKey.currentState!.openDrawer();
-              },
-              icon: Icon(Icons.menu, color: mainColor),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: InkWell(
+                onTap: () {
+                  scaffoldKey.currentState!.openDrawer();
+                },
+                child: Image.asset(
+                  'assets/icons/menu.png',
+                  height: 30,
+                  width: 30,
+                ),
+              ),
             ),
+            // IconButton(
+            //   onPressed: () {
+            //     scaffoldKey.currentState!.openDrawer();
+            //   },
+            //   icon: Icon(Icons.menu, color: mainColor),
+            // ),
           ],
         ),
       ),
@@ -49,27 +62,33 @@ class _NavigationState extends State<Navigation> {
               padding: const EdgeInsets.only(left: 20, top: 20),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    child: Container(color: Colors.grey[200]),
+                  Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      shape: BoxShape.circle,
+                    ),
                   ),
-                  SizedBox(width: 30),
+
+                  SizedBox(width: 15),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         "Mark Cardeno",
                         style: GoogleFonts.workSans(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
                         "3 pending tasks",
                         style: GoogleFonts.workSans(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                          color: Colors.deepOrange,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
                         ),
                       ),
                     ],
