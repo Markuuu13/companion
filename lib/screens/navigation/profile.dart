@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../components/schedule_status.dart';
+
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -47,13 +49,44 @@ class _ProfileState extends State<Profile> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        width: double.infinity,
-                        height: 350,
-                        decoration: BoxDecoration(color: Colors.grey[300]),
-                        child: Text("image"),
+                      SizedBox(height: 60),
+                      Text(
+                        "Profile",
+                        style: GoogleFonts.workSans(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 190,
+                            height: 190,
+                            decoration: BoxDecoration(color: Colors.grey[300]),
+                          ),
+                          Column(
+                            children: [
+                              StatusContainer(
+                                color: notStarted,
+                                text: "Today's Task: 0",
+                              ),
+                              SizedBox(height: 15),
+                              StatusContainer(
+                                color: orange,
+                                text: "Pending: 0",
+                              ),
+                              SizedBox(height: 15),
+                              StatusContainer(
+                                color: completeColor,
+                                text: "Completed: 0",
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                       SizedBox(height: 30),
                       Text(
@@ -109,6 +142,36 @@ class _ProfileState extends State<Profile> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+                      Spacer(),
+                      Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            showSuccessToastProfile(
+                              context,
+                              "Edit Profile Clicked",
+                            );
+                          },
+                          child: Container(
+                            width: 250,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: mainColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Edit Profile',
+                                style: GoogleFonts.workSans(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 50),
                     ],
                   ),
                 ),

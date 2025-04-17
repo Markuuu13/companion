@@ -1,5 +1,8 @@
+import 'package:companion/service/auth_service.dart';
+import 'package:companion/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constants.dart';
@@ -22,7 +25,31 @@ class _NavigationState extends State<Navigation> {
     NavigationController(),
   );
 
+  // Fetching user details
+  final AuthService authService = AuthService();
+  final UserService userService = UserService();
+  Map<String, dynamic>? userProfile;
+  final box = GetStorage();
+
   List pages = [Home(), Profile(), AiAssistant(), Settings()];
+
+  Future<void> _loadUserProfile() async {
+    final userId = box.read('userid');
+
+    try {
+      final details = await userService.fetchUserDetails(userId);
+      setState(() {
+        userProfile = details;
+      });
+    } catch (e) {}
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadUserProfile();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,14 +102,16 @@ class _NavigationState extends State<Navigation> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Mark Cardeno",
-                        style: GoogleFonts.workSans(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      userProfile == null
+                          ? Center(child: CircularProgressIndicator())
+                          : Text(
+                            "${userProfile!['firstname']} ${userProfile!['lastname']}",
+                            style: GoogleFonts.workSans(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                       Text(
                         "3 pending tasks",
                         style: GoogleFonts.workSans(

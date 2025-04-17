@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-var backendUrl = 'http://192.168.0.118:3500';
+var backendUrl = 'http://192.168.0.116:3500';
 
 var mainColor = Color(0xFFFF7559);
 var completeColor = Color(0xFF5BEF8D);
@@ -23,6 +23,22 @@ void showSuccessToast(BuildContext context, String message) {
     autoDismiss: true,
     toastDuration: Duration(seconds: 2, milliseconds: 500),
     toastPosition: Position.bottom,
+    animationDuration: Duration(milliseconds: 500),
+    animationType: AnimationType.fromBottom,
+    title: Text(message, style: GoogleFonts.workSans(color: Colors.black)),
+    iconWidget: Icon(Icons.error, color: Colors.lightGreen),
+    displayCloseButton: false,
+    actionHandler: () {
+      print("Action button pressed");
+    },
+  ).show(context);
+}
+
+void showSuccessToastProfile(BuildContext context, String message) {
+  CherryToast.info(
+    autoDismiss: true,
+    toastDuration: Duration(seconds: 2, milliseconds: 500),
+    toastPosition: Position.top,
     animationDuration: Duration(milliseconds: 500),
     animationType: AnimationType.fromBottom,
     title: Text(message, style: GoogleFonts.workSans(color: Colors.black)),

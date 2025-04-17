@@ -24,10 +24,10 @@ exports.getEducationLevel = async (req, res) => {
         const { data, error } = await supabase
             .from('education_level')
             .select('*')
-            .order('id', {ascending: true});
+            .order('id', { ascending: true });
 
         console.log(data);
-            
+
         if (!data || error) {
             return res.status(404).json({ message: "No data found" });
         }
@@ -38,3 +38,25 @@ exports.getEducationLevel = async (req, res) => {
         return res.status(500).json({ message: "Internal server error", error: error.message });
     }
 }
+
+exports.deleteUser = async (req, res) => {
+
+    try {
+        const { user_id } = req.body;
+
+        const { error } = await supabase
+            .from('users')
+            .delete()
+            .eq('user_id', user_id);
+
+        if (error) {
+            return res.status(500).json({ message: "Failed to delete user", error: error.message });
+        }
+
+        return res.status(200).json({ message: "User successfully deleted" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+}
+
