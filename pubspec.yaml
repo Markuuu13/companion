@@ -46,6 +46,7 @@ dependencies:
   supabase_flutter: ^2.8.4
   shimmer: ^3.0.0
   font_awesome_flutter: ^10.8.0
+  super_tooltip: ^2.0.9
 
 dev_dependencies:
   flutter_test:

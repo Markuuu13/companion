@@ -3,6 +3,7 @@ import 'package:companion/service/auth_service.dart';
 import 'package:companion/service/protected_service.dart';
 import 'package:companion/service/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -41,6 +42,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child:
             userProfile == null
@@ -63,10 +65,32 @@ class _ProfileState extends State<Profile> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            width: 190,
-                            height: 190,
-                            decoration: BoxDecoration(color: Colors.grey[300]),
+                          Stack(
+                            children: [
+                              Container(
+                                width: 190,
+                                height: 190,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                ),
+                              ),
+                              Positioned(
+                                top: 10,
+                                left: 10,
+                                child: CircleAvatar(
+                                  radius: 18,
+                                  backgroundColor: Colors.white,
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      FontAwesomeIcons.penToSquare,
+                                      size: 16,
+                                      color: mainColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           Column(
                             children: [

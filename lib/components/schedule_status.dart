@@ -8,23 +8,26 @@ class StatusContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
-      width: 170,
-      height: 40,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: GoogleFonts.workSans(
-            color: Colors.white,
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
+        width: screenWidth * 0.4,
+        height: 40,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: GoogleFonts.workSans(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    
   }
 }

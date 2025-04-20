@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-var backendUrl = 'http://192.168.0.116:3500';
+var backendUrl = 'http://192.168.0.106:3500';
 
 var mainColor = Color(0xFFFF7559);
 var completeColor = Color(0xFF5BEF8D);
@@ -13,6 +13,8 @@ var red = Color(0xFFC64242);
 var orange = Color(0xFFFFAD5C);
 var green = Color(0xFF52BD76);
 var blue = Color(0xFF52A9FF);
+var manualEditNotAvail = const Color.fromARGB(255, 255, 150, 118);
+var manualEditNotAvailTxt = const Color.fromARGB(255, 246, 193, 177);
 var autoSchedNotAvail = Color(0xFF7FA58C);
 var autoSchedNotAvailTxt = Color(0xFFD2D2D2);
 
