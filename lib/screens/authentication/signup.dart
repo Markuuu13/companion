@@ -38,6 +38,7 @@ class _SignupPageState extends State<SignupPage> {
           firstname.text.trim().isEmpty ||
           lastname.text.trim().isEmpty ||
           selectedEducationLevel == null;
+          selectedGrade == null;
 
       if (isEmpty) {
         if (!isToastVisible) {
@@ -57,6 +58,7 @@ class _SignupPageState extends State<SignupPage> {
           firstname: firstname.text.trim(),
           lastname: lastname.text.trim(),
           educationLevel: selectedEducationLevel!,
+          selectedGrade: selectedGrade!,
         ),
         transition: Transition.fade,
         duration: Duration(milliseconds: 600),

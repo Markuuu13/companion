@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-var backendUrl = 'http://192.168.0.106:3500';
+var backendUrl = 'http://192.168.163.205:3500';
 
 var mainColor = Color(0xFFFF7559);
 var completeColor = Color(0xFF5BEF8D);

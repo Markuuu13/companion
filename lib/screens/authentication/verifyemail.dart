@@ -13,6 +13,7 @@ class VerifyEmail extends StatefulWidget {
   final String lastname;
   final String email;
   final String educationLevel;
+  final String selectedGrade;
   final String password;
   const VerifyEmail({
     super.key,
@@ -21,6 +22,7 @@ class VerifyEmail extends StatefulWidget {
     required this.email,
     required this.educationLevel,
     required this.password,
+    required this.selectedGrade,
   });
 
   @override
@@ -44,7 +46,9 @@ class _VerifyEmailState extends State<VerifyEmail> {
     String lastname,
     String password,
     String educationLevel,
-  ) {
+    String selectedGrade,
+    String otp,
+  ) async{
     try {
       authService.signUp(
         context: context,
@@ -53,9 +57,12 @@ class _VerifyEmailState extends State<VerifyEmail> {
         lastname: lastname,
         password: password,
         educationLevel: educationLevel,
-        otp: verifyOtp.text.trim(),
+        selectedGrade: selectedGrade,
+        otp: otp,
       );
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   @override
@@ -137,6 +144,8 @@ class _VerifyEmailState extends State<VerifyEmail> {
                           widget.lastname,
                           widget.password,
                           widget.educationLevel,
+                          widget.selectedGrade,
+                          verifyOtp.text.trim(),
                         ),
 
                     child: Container(

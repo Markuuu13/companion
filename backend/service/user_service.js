@@ -10,14 +10,14 @@ exports.register = async (req, res) => {
     console.log("Received Body:", req.body);
 
     try {
-        const { firstname, lastname, educationLevel, email, password, otp } = req.body;
+        const { firstname, lastname, educationLevel, selectedGrade, email, password, otp } = req.body;
 
         const hashedPassword = await bcrypt.hash(password, 8);
 
         const response = await supabase.auth.verifyOtp({
             email,
             token: otp,
-            type: 'signup',
+            type: 'email',
         });
         // Step 2: Handle OTP verification error or success
         if (response.error) {
@@ -25,14 +25,12 @@ exports.register = async (req, res) => {
             return res.status(400).json({ message: "Invalid or expired OTP", error: response.error.message });
         }
 
-        // if the user is already existing, don't create an account
-
-
         // creates account
         const { data, error } = await supabase.from("users").insert({
             firstname,
             lastname,
             educationLevel,
+            selectedGrade,
             email,
             password: hashedPassword,
         }).select('*');
@@ -123,7 +121,7 @@ exports.login = async (req, res) => {
         //     return res.status(500).json({messsage: "Error occured when storing the refresh token"})
         // }
 
-        return res.status(200).json({ message: "Login successful", data});
+        return res.status(200).json({ message: "Login successful", data });
     } catch (error) {
         res.status(500).json({ error });
         console.log(error);
@@ -136,7 +134,7 @@ exports.registerEmailOTP = async (req, res) => {
 
         const { data, error } = await supabase.auth.signInWithOtp({
             email,
-            options: { shouldCreateUser: false, type: 'signup' },
+            options: { shouldCreateUser: true, },
         });
 
         if (error) {

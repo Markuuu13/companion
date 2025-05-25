@@ -4,10 +4,12 @@ import 'package:companion/service/protected_service.dart';
 import 'package:companion/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../components/schedule_status.dart';
+import '../other_pages/edit_profile.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -170,10 +172,7 @@ class _ProfileState extends State<Profile> {
                       Center(
                         child: GestureDetector(
                           onTap: () {
-                            showSuccessToastProfile(
-                              context,
-                              "Edit Profile Clicked",
-                            );
+                            Get.to(EditProfile());
                           },
                           child: Container(
                             width: 250,

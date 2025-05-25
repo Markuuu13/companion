@@ -26,6 +26,7 @@ class AuthService {
     required String lastname,
     required String password,
     required String educationLevel,
+    required String selectedGrade,
     required String otp,
   }) async {
     try {
@@ -34,9 +35,9 @@ class AuthService {
         email: email,
         firstname: firstname,
         lastname: lastname,
-        token: '',
         password: password,
         educationLevel: educationLevel,
+        selectedGrade: selectedGrade,
         otp: otp,
       );
 
@@ -54,7 +55,7 @@ class AuthService {
       } else if (response.statusCode == 500) {
         showErrorToast(context, jsonDecode(response.body)['message']);
       } else {
-        print("Invalid");
+        showErrorToast(context, jsonDecode(response.body)['message']);
       }
     } catch (e) {
       print(e);

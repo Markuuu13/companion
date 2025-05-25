@@ -45,8 +45,7 @@ class _AddScheduleState extends State<AddSchedule> {
         deadlineDateController.text.isEmpty &&
         deadlineTimeController.text.isEmpty &&
         scheduleDateController.text.isEmpty &&
-        scheduleTimeController.text.isEmpty &&
-        selectedPriorityLevel == null) {
+        scheduleTimeController.text.isEmpty) {
       showErrorToast(context, "Please fill in all fields.");
       return;
     }
@@ -61,7 +60,6 @@ class _AddScheduleState extends State<AddSchedule> {
         deadlineTime: deadlineTimeController.text.trim(),
         scheduleDate: scheduleDateController.text.trim(),
         scheduleTime: scheduleTimeController.text.trim(),
-        priorityLevel: selectedPriorityLevel!,
       );
 
       // Clear the selected priority level
@@ -114,8 +112,7 @@ class _AddScheduleState extends State<AddSchedule> {
         deadlineDateController.text.isNotEmpty &&
         deadlineTimeController.text.isNotEmpty &&
         scheduleDateController.text.isNotEmpty &&
-        scheduleTimeController.text.isNotEmpty &&
-        selectedPriorityLevel != null;
+        scheduleTimeController.text.isNotEmpty;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -291,37 +288,15 @@ class _AddScheduleState extends State<AddSchedule> {
                         ),
                       ),
                       SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () async {
-                          
-                        },
-                        child: SuperTooltip(
-                          onShow: () {
-                            showtooltip.showTooltip();
-                          },
-                          onHide: () {
-                            showtooltip.hideTooltip();
-                          },
-                          elevation: 0,
-                          showBarrier: false,
-                          controller: showtooltip,
-                          content: const Text(
-                            "When you set a schedule manually, ",
-                            softWrap: true,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          child: Container(
-                            width: 40.0,
-                            height: 40.0,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.blue,
-                            ),
-                            child: Icon(Icons.add, color: Colors.white),
-                          ),
+                      Tooltip(
+                        message:
+                            "Auto Schedule will not available if the \ndate schedule is set.",
+                        child: Icon(
+                          Icons.info_rounded,
+                          color: mainColor,
+                          size: 20,
                         ),
                       ),
-
                       SizedBox(width: 10),
                       Text(
                         "(Long press to view)",
@@ -381,51 +356,58 @@ class _AddScheduleState extends State<AddSchedule> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10, top: 10),
-                  child: Text(
-                    "Priority Level",
-                    style: GoogleFonts.workSans(
-                      color: mainColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
+                if (scheduleDateController.text.trim().isEmpty &&
+                    scheduleTimeController.text.trim().isEmpty)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10, top: 10),
+                        child: Text(
+                          "Priority Level",
+                          style: GoogleFonts.workSans(
+                            color: mainColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: "Low",
+                            groupValue: selectedPriorityLevel,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedPriorityLevel = value;
+                              });
+                            },
+                          ),
+                          Text('Low'),
+                          Radio(
+                            value: "Medium",
+                            groupValue: selectedPriorityLevel,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedPriorityLevel = value;
+                              });
+                            },
+                          ),
+                          Text('Medium'),
+                          Radio(
+                            value: "High",
+                            groupValue: selectedPriorityLevel,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedPriorityLevel = value;
+                              });
+                            },
+                          ),
+                          Text('High'),
+                        ],
+                      ),
+                    ],
                   ),
-                ),
-                Row(
-                  children: [
-                    Radio(
-                      value: "Low",
-                      groupValue: selectedPriorityLevel,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedPriorityLevel = value;
-                        });
-                      },
-                    ),
-                    Text('Low'),
-                    Radio(
-                      value: "Medium",
-                      groupValue: selectedPriorityLevel,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedPriorityLevel = value;
-                        });
-                      },
-                    ),
-                    Text('Medium'),
-                    Radio(
-                      value: "High",
-                      groupValue: selectedPriorityLevel,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedPriorityLevel = value;
-                        });
-                      },
-                    ),
-                    Text('High'),
-                  ],
-                ),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 30),
@@ -433,18 +415,23 @@ class _AddScheduleState extends State<AddSchedule> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       if (isManualSchedAvail)
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: mainColor,
-                          ),
-                          onPressed: _onAddSchedule,
-                          child: Text(
-                            "Add Schedule",
-                            style: GoogleFonts.workSans(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                        Column(
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: mainColor,
+                              ),
+                              onPressed: _onAddSchedule,
+                              child: Text(
+                                "Add Schedule",
+                                style: GoogleFonts.workSans(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                          ),
+                            Text(''),
+                          ],
                         )
                       else
                         ElevatedButton(
@@ -534,20 +521,34 @@ class _AddScheduleState extends State<AddSchedule> {
   }
 
   Future<void> schedulePickDate() async {
-    final DateTime picked =
-        await showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime.now(),
-          lastDate: DateTime(2101),
-        ) ??
-        DateTime.now();
+    try {
+      final parts = deadlineDateController.text.split('-');
+      final int month = int.parse(parts[0]);
+      final int day = int.parse(parts[1]);
+      final int year = int.parse(parts[2]);
+      final deadlineDate = DateTime(year, month, day);
 
-    if (picked != null) {
-      String formattedDate = "${picked.month}-${picked.day}-${picked.year}";
-      setState(() {
-        scheduleDateController.text = formattedDate;
-      });
+      final DateTime picked =
+          await showDatePicker(
+            context: context,
+            initialDate:
+                DateTime.now().isAfter(deadlineDate)
+                    ? deadlineDate
+                    : DateTime.now(),
+            firstDate: DateTime.now(),
+            lastDate: deadlineDate,
+          ) ??
+          DateTime.now();
+
+      if (picked != null) {
+        String formattedDate = "${picked.month}-${picked.day}-${picked.year}";
+        setState(() {
+          scheduleDateController.text = formattedDate;
+        });
+      }
+
+    } catch (e) {
+      print(e.toString());
     }
   }
 

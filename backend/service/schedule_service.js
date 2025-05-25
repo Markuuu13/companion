@@ -3,7 +3,7 @@ const supabase = require('../db/database');
 exports.addSchedule = async (req, res) => {
 
     try {
-        const { user_id, title, description, subject, deadlineDate, deadlineTime, dateScheduled, dateScheduledTime, priorityLevel } = req.body;
+        const { user_id, title, description, subject, deadlineDate, deadlineTime, dateScheduled, dateScheduledTime} = req.body;
 
         const { data, error } = await supabase
             .from('schedule')
@@ -16,7 +16,6 @@ exports.addSchedule = async (req, res) => {
                 deadlineTime,
                 dateScheduled,
                 dateScheduledTime,
-                priorityLevel,
             }).select("*");
 
         if (error) {

@@ -10,7 +10,6 @@ class AddSchedModelManual {
   final String deadlineTime;
   final String scheduleDate;
   final String scheduleTime;
-  final String priorityLevel;
 
   AddSchedModelManual({
     required this.userId,
@@ -21,7 +20,6 @@ class AddSchedModelManual {
     required this.deadlineTime,
     required this.scheduleDate,
     required this.scheduleTime,
-    required this.priorityLevel,
   });
 
   Map<String, dynamic> toMap() {
@@ -34,7 +32,6 @@ class AddSchedModelManual {
       'deadlineTime': deadlineTime,
       'dateScheduled': scheduleDate,
       'dateScheduledTime': scheduleTime,
-      'priorityLevel': priorityLevel,
     };
   }
 
@@ -48,7 +45,6 @@ class AddSchedModelManual {
       deadlineTime: map['deadlineTime'] as String,
       scheduleDate: map['dateScheduled'] as String,
       scheduleTime: map['dateScheduledTime'] as String,
-      priorityLevel: map['priorityLevel'] as String,
     );
   }
 

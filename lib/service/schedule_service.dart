@@ -15,7 +15,6 @@ class ScheduleService {
     required String deadlineTime,
     required String scheduleDate,
     required String scheduleTime,
-    required String priorityLevel,
   }) async {
     AddSchedModelManual addSchedModelManual = AddSchedModelManual(
       userId: userId,
@@ -26,7 +25,6 @@ class ScheduleService {
       deadlineTime: deadlineTime,
       scheduleDate: scheduleDate,
       scheduleTime: scheduleTime,
-      priorityLevel: priorityLevel ,
     );
     try {
       final response = await http.post(

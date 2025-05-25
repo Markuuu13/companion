@@ -12,11 +12,13 @@ class EmailSignup extends StatefulWidget {
   final String firstname;
   final String lastname;
   final String educationLevel;
+  final String selectedGrade;
   const EmailSignup({
     super.key,
     required this.firstname,
     required this.lastname,
     required this.educationLevel,
+    required this.selectedGrade,
   });
 
   @override
@@ -37,6 +39,7 @@ class _EmailSignupState extends State<EmailSignup> {
     String firstname,
     String lastname,
     String educationLevel,
+    String selectedGrade,
     String password,
   ) async {
     if (passwordController.text.trim() !=
@@ -56,6 +59,10 @@ class _EmailSignupState extends State<EmailSignup> {
         emailController.text.trim(),
       );
       if (isExistingUser) {
+        showErrorToast(
+          context,
+          "This email is already registered. Please try another email",
+        );
         return;
       }
       bool sendEmail = await authService.sendOTP(
@@ -70,6 +77,7 @@ class _EmailSignupState extends State<EmailSignup> {
             firstname: firstname,
             lastname: lastname,
             educationLevel: educationLevel,
+            selectedGrade: selectedGrade,
             password: passwordController.text.trim(),
           ),
         );
@@ -184,6 +192,7 @@ class _EmailSignupState extends State<EmailSignup> {
                           widget.firstname,
                           widget.lastname,
                           widget.educationLevel,
+                          widget.selectedGrade,
                           passwordController.text.trim(),
                         ),
                     child: Container(
@@ -209,7 +218,6 @@ class _EmailSignupState extends State<EmailSignup> {
                   ),
                 ),
               ),
-              
             ],
           ),
         ),

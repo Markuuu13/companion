@@ -11,6 +11,7 @@ class SetPassword extends StatefulWidget {
   final String firstname;
   final String lastname;
   final String educationLevel;
+  final String selectedGrade;
   final String emailAddress;
   const SetPassword({
     super.key,
@@ -18,6 +19,7 @@ class SetPassword extends StatefulWidget {
     required this.lastname,
     required this.educationLevel,
     required this.emailAddress,
+    required this.selectedGrade,
   });
 
   @override
@@ -38,6 +40,7 @@ class _SetPasswordState extends State<SetPassword> {
     String firstname,
     String lastname,
     String educationLevel,
+    String selectedGrade,
     String password,
   ) {
     if (confirmPasswordController.text.trim() !=
@@ -53,6 +56,7 @@ class _SetPasswordState extends State<SetPassword> {
       password: password,
       educationLevel: educationLevel,
       otp: '',
+      selectedGrade: selectedGrade,
     );
   }
 
@@ -155,6 +159,7 @@ class _SetPasswordState extends State<SetPassword> {
                         widget.firstname,
                         widget.lastname,
                         widget.educationLevel,
+                        widget.selectedGrade,
                         passwordController.text.trim(),
                       );
                     },
