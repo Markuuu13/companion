@@ -45,7 +45,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: NoSchedule()
+        child: Center(child: NoSchedule())
             // userProfile == null
             //     ? Center(child: CircularProgressIndicator())
             //     : Column(

@@ -10,7 +10,7 @@ class NoSchedule extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          Image.asset("assets/addsched.png"),
+          Image.asset('assets/icons/addsched.png', width: 200, height: 200),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
