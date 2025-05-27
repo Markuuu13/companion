@@ -67,33 +67,12 @@ class _ProfileState extends State<Profile> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Stack(
-                            children: [
-                              Container(
-                                width: 190,
-                                height: 190,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                ),
-                              ),
-                              Positioned(
-                                top: 10,
-                                left: 10,
-                                child: CircleAvatar(
-                                  radius: 18,
-                                  backgroundColor: Colors.white,
-                                  child: IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      FontAwesomeIcons.penToSquare,
-                                      size: 16,
-                                      color: mainColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          Container(
+                            width: 190,
+                            height: 190,
+                            decoration: BoxDecoration(color: Colors.grey[300]),
                           ),
+
                           Column(
                             children: [
                               StatusContainer(
@@ -115,58 +94,25 @@ class _ProfileState extends State<Profile> {
                         ],
                       ),
                       SizedBox(height: 30),
-                      Text(
-                        "Name",
-                        style: GoogleFonts.workSans(
-                          color: mainColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      // Name
-                      Text(
-                        "${userProfile!['firstname']} ${userProfile!['lastname']}",
-                        style: GoogleFonts.workSans(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      buildUserDetails(
+                        title: "Name",
+                        userDetails:
+                            "${userProfile!['firstname']} ${userProfile!['lastname']}",
                       ),
                       SizedBox(height: 30),
-                      Text(
-                        "Email",
-                        style: GoogleFonts.workSans(
-                          color: mainColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      // Name
-                      Text(
-                        userProfile!['email'],
-                        style: GoogleFonts.workSans(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      buildUserDetails(
+                        title: "Email",
+                        userDetails: userProfile!['email'],
                       ),
                       SizedBox(height: 30),
-                      Text(
-                        "Education Level",
-                        style: GoogleFonts.workSans(
-                          color: mainColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      buildUserDetails(
+                        title: "Education Level",
+                        userDetails: userProfile!['educationLevel'],
                       ),
-                      // Name
-                      Text(
-                        userProfile!['educationLevel'],
-                        style: GoogleFonts.workSans(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      SizedBox(height: 30),
+                      buildUserDetails(
+                        title: "Grade Level",
+                        userDetails: userProfile!['selectedGrade'],
                       ),
                       Spacer(),
                       Center(
@@ -199,6 +145,33 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
       ),
+    );
+  }
+
+  Widget buildUserDetails({
+    required String title,
+    required String userDetails,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.workSans(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: mainColor,
+          ),
+        ),
+        Text(
+          userDetails,
+          style: GoogleFonts.workSans(
+            color: Colors.black,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }

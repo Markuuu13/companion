@@ -106,11 +106,14 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 60),
                   CustomTextField(
                     labeltext: 'Email Address',
+                    icon: Icon(Icons.email),
                     controller: emailController,
                   ),
                   SizedBox(height: 40),
                   CustomTextField(
                     labeltext: 'Password',
+                    isObscure: true,
+                    icon: Icon(Icons.lock),
                     controller: passwordController,
                   ),
                   Row(

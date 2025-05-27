@@ -37,7 +37,7 @@ class _SignupPageState extends State<SignupPage> {
       bool isEmpty =
           firstname.text.trim().isEmpty ||
           lastname.text.trim().isEmpty ||
-          selectedEducationLevel == null;
+          selectedEducationLevel == null ||
           selectedGrade == null;
 
       if (isEmpty) {
@@ -94,7 +94,7 @@ class _SignupPageState extends State<SignupPage> {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        backgroundColor: mainColor,
+        backgroundColor: Colors.white,
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +103,7 @@ class _SignupPageState extends State<SignupPage> {
                 onPressed: () {
                   Get.back();
                 },
-                icon: Icon(Icons.arrow_back, color: Colors.white),
+                icon: Icon(Icons.arrow_back, color: Colors.black),
               ),
               SizedBox(height: 20),
               Padding(
@@ -116,7 +116,7 @@ class _SignupPageState extends State<SignupPage> {
                       style: GoogleFonts.workSans(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: mainColor,
                       ),
                     ),
                     Text(
@@ -124,7 +124,7 @@ class _SignupPageState extends State<SignupPage> {
                       style: GoogleFonts.workSans(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: Colors.white,
+                        color: Colors.black45,
                       ),
                     ),
                   ],
@@ -141,10 +141,17 @@ class _SignupPageState extends State<SignupPage> {
                 child: DropdownButtonFormField(
                   value: selectedEducationLevel,
                   padding: EdgeInsets.symmetric(horizontal: 10),
-                  hint: Text("Select your Education Level"),
+                  hint: Text(
+                    "Select your Education Level",
+                    style: GoogleFonts.workSans(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: mainColor,
                     border: OutlineInputBorder(
                       borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(
@@ -152,13 +159,20 @@ class _SignupPageState extends State<SignupPage> {
                       ), // Rounded corners
                     ),
                   ),
-                  dropdownColor: Colors.white,
-                  icon: Icon(Icons.arrow_drop_down, color: Colors.blue),
+                  dropdownColor: mainColor,
+                  icon: Icon(Icons.arrow_drop_down, color: Colors.white),
                   items:
                       educationLevels.map<DropdownMenuItem>((dynamic value) {
                         return DropdownMenuItem(
                           value: value.toString(),
-                          child: Text(value.toString()),
+                          child: Text(
+                            value.toString(),
+                            style: GoogleFonts.workSans(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         );
                       }).toList(),
 
@@ -177,10 +191,17 @@ class _SignupPageState extends State<SignupPage> {
                   child: DropdownButtonFormField(
                     value: selectedGrade,
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    hint: Text("Select your Education Level"),
+                    hint: Text(
+                      "Select your Education Level",
+                      style: GoogleFonts.workSans(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: mainColor,
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(
@@ -188,8 +209,8 @@ class _SignupPageState extends State<SignupPage> {
                         ), // Rounded corners
                       ),
                     ),
-                    dropdownColor: Colors.white,
-                    icon: Icon(Icons.arrow_drop_down, color: Colors.blue),
+                    dropdownColor: mainColor,
+                    icon: Icon(Icons.arrow_drop_down, color: Colors.white),
                     items:
                         selectedEducationLevel == 'Primary Education'
                             ? primaryEducGradeLevel.map<DropdownMenuItem>((
@@ -197,8 +218,15 @@ class _SignupPageState extends State<SignupPage> {
                             ) {
                               return DropdownMenuItem(
                                 value: value.toString(),
-                                
-                                child: Text(value.toString(), style: GoogleFonts.workSans(),),
+
+                                child: Text(
+                                  value.toString(),
+                                  style: GoogleFonts.workSans(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               );
                             }).toList()
                             : selectedEducationLevel == 'Secondary Education'
@@ -207,7 +235,14 @@ class _SignupPageState extends State<SignupPage> {
                             ) {
                               return DropdownMenuItem(
                                 value: value.toString(),
-                                child: Text(value.toString()),
+                                child: Text(
+                                  value.toString(),
+                                  style: GoogleFonts.workSans(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               );
                             }).toList()
                             : selectedEducationLevel == 'Tertiary Education'
@@ -216,7 +251,14 @@ class _SignupPageState extends State<SignupPage> {
                             ) {
                               return DropdownMenuItem(
                                 value: value.toString(),
-                                child: Text(value.toString()),
+                                child: Text(
+                                  value.toString(),
+                                  style: GoogleFonts.workSans(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               );
                             }).toList()
                             : null,
@@ -224,7 +266,6 @@ class _SignupPageState extends State<SignupPage> {
                     onChanged: (newValue) {
                       setState(() {
                         selectedGrade = newValue;
-                        
                       });
                     },
                   ),
@@ -238,7 +279,7 @@ class _SignupPageState extends State<SignupPage> {
                       padding: EdgeInsets.all(15),
                       width: MediaQuery.sizeOf(context).width * 0.9,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: green,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20),
                           bottomRight: Radius.circular(20),
@@ -247,7 +288,7 @@ class _SignupPageState extends State<SignupPage> {
                       child: Text(
                         "Next",
                         style: TextStyle(
-                          color: mainColor,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
@@ -278,7 +319,9 @@ class _SignupPageState extends State<SignupPage> {
 
   Future<void> loadPrimaryEducGradeLevel() async {
     try {
-      List<dynamic> data = await appService.fetchPrimaryEducationLevels(context);
+      List<dynamic> data = await appService.fetchPrimaryEducationLevels(
+        context,
+      );
       setState(() {
         primaryEducGradeLevel = data;
       });
@@ -289,7 +332,9 @@ class _SignupPageState extends State<SignupPage> {
 
   Future<void> loadSecondaryEducGradeLevel() async {
     try {
-      List<dynamic> data = await appService.fetchSecondaryEducationLevels(context);
+      List<dynamic> data = await appService.fetchSecondaryEducationLevels(
+        context,
+      );
       setState(() {
         secondaryEducGradeLevel = data;
       });
@@ -300,7 +345,9 @@ class _SignupPageState extends State<SignupPage> {
 
   Future<void> loadTertiaryEducGradeLevel() async {
     try {
-      List<dynamic> data = await appService.fetchTertiaryEducationLevels(context);
+      List<dynamic> data = await appService.fetchTertiaryEducationLevels(
+        context,
+      );
       setState(() {
         tertiaryEducGradeLevel = data;
       });

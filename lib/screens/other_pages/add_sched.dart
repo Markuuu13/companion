@@ -113,374 +113,379 @@ class _AddScheduleState extends State<AddSchedule> {
         deadlineTimeController.text.isNotEmpty &&
         scheduleDateController.text.isNotEmpty &&
         scheduleTimeController.text.isNotEmpty;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Page Title
-                    Text(
-                      "Add Schedule",
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // Dismiss the keyboard
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Page Title
+                      Text(
+                        "Add Schedule",
+                        style: GoogleFonts.workSans(
+                          color: Colors.black,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Get.back(),
+                        icon: Icon(Icons.cancel, color: Colors.red),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    "What's your plan?",
+                    style: GoogleFonts.workSans(
+                      color: Colors.grey[500],
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 15),
+      
+                  // Title
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10, top: 20),
+                    child: Text(
+                      "Title",
                       style: GoogleFonts.workSans(
-                        color: Colors.black,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                        color: mainColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
                       ),
-                    ),
-                    IconButton(
-                      onPressed: () => Get.back(),
-                      icon: Icon(Icons.cancel, color: Colors.red),
-                    ),
-                  ],
-                ),
-                Text(
-                  "What's your plan?",
-                  style: GoogleFonts.workSans(
-                    color: Colors.grey[500],
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 15),
-
-                // Title
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10, top: 20),
-                  child: Text(
-                    "Title",
-                    style: GoogleFonts.workSans(
-                      color: mainColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                ),
-
-                AddSchedTxtField(
-                  hintText: 'Enter the title',
-                  controller: titleController,
-                ),
-
-                //Description
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10, top: 20),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Description",
-                        style: GoogleFonts.workSans(
-                          color: mainColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(width: 6),
-                      Text(
-                        "(optional)",
-                        style: GoogleFonts.workSans(
-                          color: mainColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
+      
+                  AddSchedTxtField(
+                    hintText: 'Enter the title',
+                    controller: titleController,
                   ),
-                ),
-                AddSchedTxtField(
-                  hintText: 'Description about your plan',
-                  controller: descController,
-                ),
-
-                //Subject-Course
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10, top: 20),
-                  child: Text(
-                    "Subject/Course",
-                    style: GoogleFonts.workSans(
-                      color: mainColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                AddSchedTxtField(
-                  hintText: 'On what subject/course?',
-                  controller: subjController,
-                ),
-
-                // Deadline of the Task
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10, top: 20),
-                  child: Text(
-                    "Deadline of the Task",
-                    style: GoogleFonts.workSans(
-                      color: mainColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Icon(FontAwesomeIcons.calendar, color: Colors.black),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: AddSchedTxtField(
-                        isReadOnly: true,
-                        onTap: () => deadlinePickDate(),
-                        hintText: 'Choose the date...',
-                        controller: deadlineDateController,
-                      ),
-                    ),
-
-                    SizedBox(width: 20),
-                    Expanded(
-                      child: AddSchedTxtField(
-                        isReadOnly: true,
-                        onTap: () => deadlinePickTime(),
-                        hintText: 'Choose the time...',
-                        controller: deadlineTimeController,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      deadlineDateController.clear();
-                      deadlineTimeController.clear();
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Spacer(),
-                      Icon(Icons.delete, color: red),
-                      Text(
-                        "Clear date and time",
-                        style: GoogleFonts.workSans(
-                          color: red,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10, top: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Date Schedule",
-                        style: GoogleFonts.workSans(
-                          color: mainColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Tooltip(
-                        message:
-                            "Auto Schedule will not available if the \ndate schedule is set.",
-                        child: Icon(
-                          Icons.info_rounded,
-                          color: mainColor,
-                          size: 20,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        "(Long press to view)",
-                        style: GoogleFonts.workSans(
-                          color: mainColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Icon(FontAwesomeIcons.calendar, color: Colors.black),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: AddSchedTxtField(
-                        isReadOnly: true,
-                        onTap: () => schedulePickDate(),
-                        hintText: 'Choose the date...',
-                        controller: scheduleDateController,
-                      ),
-                    ),
-
-                    SizedBox(width: 20),
-                    Expanded(
-                      child: AddSchedTxtField(
-                        isReadOnly: true,
-                        onTap: () => schedulePickTime(),
-                        hintText: 'Choose the time...',
-                        controller: scheduleTimeController,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      scheduleDateController.clear();
-                      scheduleTimeController.clear();
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Spacer(),
-                      Icon(Icons.delete, color: red),
-                      Text(
-                        "Clear date and time",
-                        style: GoogleFonts.workSans(
-                          color: red,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (scheduleDateController.text.trim().isEmpty &&
-                    scheduleTimeController.text.trim().isEmpty)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10, top: 10),
-                        child: Text(
-                          "Priority Level",
+      
+                  //Description
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10, top: 20),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Description",
                           style: GoogleFonts.workSans(
                             color: mainColor,
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
+                        SizedBox(width: 6),
+                        Text(
+                          "(optional)",
+                          style: GoogleFonts.workSans(
+                            color: mainColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  AddSchedTxtField(
+                    hintText: 'Description about your plan',
+                    controller: descController,
+                  ),
+      
+                  //Subject-Course
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10, top: 20),
+                    child: Text(
+                      "Subject/Course",
+                      style: GoogleFonts.workSans(
+                        color: mainColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
                       ),
-                      Row(
-                        children: [
-                          Radio(
-                            value: "Low",
-                            groupValue: selectedPriorityLevel,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedPriorityLevel = value;
-                              });
-                            },
-                          ),
-                          Text('Low'),
-                          Radio(
-                            value: "Medium",
-                            groupValue: selectedPriorityLevel,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedPriorityLevel = value;
-                              });
-                            },
-                          ),
-                          Text('Medium'),
-                          Radio(
-                            value: "High",
-                            groupValue: selectedPriorityLevel,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedPriorityLevel = value;
-                              });
-                            },
-                          ),
-                          Text('High'),
-                        ],
+                    ),
+                  ),
+                  AddSchedTxtField(
+                    hintText: 'On what subject/course?',
+                    controller: subjController,
+                  ),
+      
+                  // Deadline of the Task
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10, top: 20),
+                    child: Text(
+                      "Deadline of the Task",
+                      style: GoogleFonts.workSans(
+                        color: mainColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Icon(FontAwesomeIcons.calendar, color: Colors.black),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: AddSchedTxtField(
+                          isReadOnly: true,
+                          onTap: () => deadlinePickDate(),
+                          hintText: 'Choose the date...',
+                          controller: deadlineDateController,
+                        ),
+                      ),
+      
+                      SizedBox(width: 20),
+                      Expanded(
+                        child: AddSchedTxtField(
+                          isReadOnly: true,
+                          onTap: () => deadlinePickTime(),
+                          hintText: 'Choose the time...',
+                          controller: deadlineTimeController,
+                        ),
                       ),
                     ],
                   ),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        deadlineDateController.clear();
+                        deadlineTimeController.clear();
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Icon(Icons.delete, color: red),
+                        Text(
+                          "Clear date and time",
+                          style: GoogleFonts.workSans(
+                            color: red,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10, top: 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Date Schedule",
+                          style: GoogleFonts.workSans(
+                            color: mainColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Tooltip(
+                          message:
+                              "Auto Schedule will not available if the \ndate schedule is set.",
+                          child: Icon(
+                            Icons.info_rounded,
+                            color: mainColor,
+                            size: 20,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          "(Long press to view)",
+                          style: GoogleFonts.workSans(
+                            color: mainColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
                     children: [
-                      if (isManualSchedAvail)
-                        Column(
+                      Icon(FontAwesomeIcons.calendar, color: Colors.black),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: AddSchedTxtField(
+                          isReadOnly: true,
+                          onTap: () => schedulePickDate(),
+                          hintText: 'Choose the date...',
+                          controller: scheduleDateController,
+                        ),
+                      ),
+      
+                      SizedBox(width: 20),
+                      Expanded(
+                        child: AddSchedTxtField(
+                          isReadOnly: true,
+                          onTap: () => schedulePickTime(),
+                          hintText: 'Choose the time...',
+                          controller: scheduleTimeController,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        scheduleDateController.clear();
+                        scheduleTimeController.clear();
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Icon(Icons.delete, color: red),
+                        Text(
+                          "Clear date and time",
+                          style: GoogleFonts.workSans(
+                            color: red,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (scheduleDateController.text.trim().isEmpty &&
+                      scheduleTimeController.text.trim().isEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10, top: 10),
+                          child: Text(
+                            "Priority Level",
+                            style: GoogleFonts.workSans(
+                              color: mainColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Row(
                           children: [
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: mainColor,
-                              ),
-                              onPressed: _onAddSchedule,
-                              child: Text(
-                                "Add Schedule",
-                                style: GoogleFonts.workSans(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                            Radio(
+                              value: "Low",
+                              groupValue: selectedPriorityLevel,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedPriorityLevel = value;
+                                });
+                              },
+                            ),
+                            Text('Low'),
+                            Radio(
+                              value: "Medium",
+                              groupValue: selectedPriorityLevel,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedPriorityLevel = value;
+                                });
+                              },
+                            ),
+                            Text('Medium'),
+                            Radio(
+                              value: "High",
+                              groupValue: selectedPriorityLevel,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedPriorityLevel = value;
+                                });
+                              },
+                            ),
+                            Text('High'),
+                          ],
+                        ),
+                      ],
+                    ),
+      
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (isManualSchedAvail)
+                          Column(
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: mainColor,
+                                ),
+                                onPressed: _onAddSchedule,
+                                child: Text(
+                                  "Add Schedule",
+                                  style: GoogleFonts.workSans(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
+                              Text(''),
+                            ],
+                          )
+                        else
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: manualEditNotAvail,
                             ),
-                            Text(''),
-                          ],
-                        )
-                      else
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: manualEditNotAvail,
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            "Add Schedule",
-                            style: GoogleFonts.workSans(
-                              color: manualEditNotAvailTxt,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      SizedBox(width: 20),
-
-                      if (isAutoSchedAvailable)
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: green,
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            "Auto Schedule",
-                            style: GoogleFonts.workSans(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                            onPressed: () {},
+                            child: Text(
+                              "Add Schedule",
+                              style: GoogleFonts.workSans(
+                                color: manualEditNotAvailTxt,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        )
-                      else
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: autoSchedNotAvail,
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            "Auto Schedule",
-                            style: GoogleFonts.workSans(
-                              color: autoSchedNotAvailTxt,
-                              fontWeight: FontWeight.bold,
+                        SizedBox(width: 20),
+      
+                        if (isAutoSchedAvailable)
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: green,
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              "Auto Schedule",
+                              style: GoogleFonts.workSans(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )
+                        else
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: autoSchedNotAvail,
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              "Auto Schedule",
+                              style: GoogleFonts.workSans(
+                                color: autoSchedNotAvailTxt,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

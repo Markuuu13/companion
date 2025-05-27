@@ -34,6 +34,8 @@ class _EmailSignupState extends State<EmailSignup> {
   bool isChecked = false;
   bool isObscure = true;
 
+  String password = '';
+
   void verifyUserEmail(
     String emailAddress,
     String firstname,
@@ -96,20 +98,30 @@ class _EmailSignupState extends State<EmailSignup> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    passwordController.addListener(() {
+      setState(() {
+        password = passwordController.text.trim();
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        backgroundColor: mainColor,
+        backgroundColor: Colors.white,
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               IconButton(
                 onPressed: () => Get.back(),
-                icon: Icon(Icons.arrow_back, color: Colors.white),
+                icon: Icon(Icons.arrow_back, color: Colors.black),
               ),
               SizedBox(height: 20),
               Padding(
@@ -122,7 +134,7 @@ class _EmailSignupState extends State<EmailSignup> {
                       style: GoogleFonts.workSans(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: mainColor,
                       ),
                     ),
                     Text(
@@ -130,7 +142,7 @@ class _EmailSignupState extends State<EmailSignup> {
                       style: GoogleFonts.workSans(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: Colors.white,
+                        color: Colors.black45,
                       ),
                     ),
                   ],
@@ -148,6 +160,27 @@ class _EmailSignupState extends State<EmailSignup> {
                 controller: passwordController,
               ),
               SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  children: [
+                    buildPasswordRequirement(
+                      text: 'Password must contain at least 8 characters.',
+                      condition: password.length >= 8,
+                    ),
+                    buildPasswordRequirement(
+                      text: "Should contain special characters !@_^&#* only.",
+                      condition: RegExp(r'[!@_^&#*]').hasMatch(password),
+                    ),
+
+                    buildPasswordRequirement(
+                      text: "Should contain at least one uppercase letter.",
+                      condition: RegExp(r'[A-Z]').hasMatch(password),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
               TextfieldRegister(
                 obscureText: isObscure,
                 labeltext: 'Confirm Password',
@@ -159,9 +192,9 @@ class _EmailSignupState extends State<EmailSignup> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Checkbox(
-                      side: BorderSide(color: Colors.white),
-                      fillColor: WidgetStateProperty.all(Colors.white),
-                      checkColor: Colors.black,
+                      side: BorderSide.none,
+                      fillColor: WidgetStateProperty.all(Colors.black26),
+                      checkColor: Colors.white,
                       value: isChecked,
                       onChanged: (bool? newValue) {
                         setState(() {
@@ -173,7 +206,7 @@ class _EmailSignupState extends State<EmailSignup> {
                     Text(
                       "Show Password",
                       style: GoogleFonts.workSans(
-                        color: Colors.white,
+                        color: Colors.black87,
                         fontWeight: FontWeight.w500,
                         fontSize: 15,
                       ),
@@ -199,7 +232,7 @@ class _EmailSignupState extends State<EmailSignup> {
                       padding: EdgeInsets.all(15),
                       width: MediaQuery.sizeOf(context).width * 0.9,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: green,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20),
                           bottomRight: Radius.circular(20),
@@ -208,7 +241,7 @@ class _EmailSignupState extends State<EmailSignup> {
                       child: Text(
                         "Next",
                         style: TextStyle(
-                          color: mainColor,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
@@ -222,6 +255,32 @@ class _EmailSignupState extends State<EmailSignup> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildPasswordRequirement({
+    required String text,
+    required bool condition,
+  }) {
+    return Row(
+      children: [
+        Icon(
+          condition ? Icons.check_circle_rounded : Icons.cancel_outlined,
+          color: condition ? green : red,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: Text(
+            text,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.workSans(
+              color: condition ? green : red,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
