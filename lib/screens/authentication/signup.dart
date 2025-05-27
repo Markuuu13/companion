@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:cherry_toast/resources/arrays.dart';
 import 'package:companion/constants.dart';
@@ -31,37 +33,44 @@ class _SignupPageState extends State<SignupPage> {
   List<dynamic> tertiaryEducGradeLevel = [];
 
   bool isToastVisible = false;
+  bool? isExistingUsername;
+
+  Timer? _debounce;
+
+  void _onUsernameChanged(String text) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (text.isNotEmpty) {
+        existingUsername(text);
+      } else {
+        setState(() {
+          isExistingUsername = null;
+        });
+      }
+    });
+  }
 
   void existingUsername(String username) async {
+    if (username.length < 2) {
+      setState(() {
+        isExistingUsername = null;
+      });
+      return;
+    }
+
     try {
       bool isExisting = await appService.existingUsername(context, username);
+      print("Is Existing Username: $isExisting");
 
-      if (isExisting) {
-        if (!isToastVisible) {
-          isToastVisible = true;
-
-          showErrorToast(context, 'Username already exists');
-
-          Future.delayed(Duration(seconds: 2), () {
-            isToastVisible = false;
-          });
-        }
-      } else {
-        if (!isToastVisible) {
-          isToastVisible = true;
-
-          showSuccessToast(context, 'Username is available');
-
-          Future.delayed(Duration(seconds: 2), () {
-            isToastVisible = false;
-          });
-        }
-      }
+      setState(() {
+        isExistingUsername = isExisting;
+      });
     } catch (e) {
-      print("Exception: $e");
-      showErrorToast(context, 'Error occurred while checking username');
+      print("Exception while checking username: $e");
     }
   }
+
   void next() {
     try {
       bool isEmpty =
@@ -75,6 +84,17 @@ class _SignupPageState extends State<SignupPage> {
 
           showErrorToast(context, "Please fill all fields");
 
+          Future.delayed(Duration(seconds: 2), () {
+            isToastVisible = false;
+          });
+        }
+        return;
+      }
+
+      if (isExistingUsername == true) {
+        if (!isToastVisible) {
+          isToastVisible = true;
+          showErrorToast(context, "Username already exists");
           Future.delayed(Duration(seconds: 2), () {
             isToastVisible = false;
           });
@@ -104,12 +124,15 @@ class _SignupPageState extends State<SignupPage> {
     loadSecondaryEducGradeLevel();
     loadTertiaryEducGradeLevel();
 
-
+    username.addListener(() {
+      _onUsernameChanged(username.text.trim());
+    });
     super.initState();
   }
 
   @override
   void dispose() {
+    _debounce?.cancel();
     isToastVisible = false;
     username.dispose();
     selectedEducationLevel = null;
@@ -118,6 +141,7 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(isExistingUsername);
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
@@ -161,6 +185,50 @@ class _SignupPageState extends State<SignupPage> {
               ),
               SizedBox(height: 40),
               TextfieldRegister(labeltext: 'Username', controller: username),
+              if (isExistingUsername != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, top: 10),
+                  child: Row(
+                    children: [
+                      Icon(
+                        isExistingUsername == true
+                            ? Icons.cancel_outlined
+                            : Icons.check_circle_rounded,
+                        color: isExistingUsername == true ? red : green,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          isExistingUsername == true
+                              ? "Username already exists"
+                              : "Username is available",
+                          style: GoogleFonts.workSans(
+                            color: isExistingUsername == true ? red : green,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              if (username.text.trim().length < 2 &&
+                  username.text.trim().isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 5,
+                  ),
+                  child: Text(
+                    "Username must be at least 2 characters",
+                    style: GoogleFonts.workSans(
+                      color: mainColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+
               SizedBox(height: 20),
               // TextfieldRegister(labeltext: 'Last name', controller: lastname),
               // SizedBox(height: 20),

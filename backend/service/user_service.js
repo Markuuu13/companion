@@ -71,12 +71,12 @@ exports.existingUser = async (req, res) => {
 exports.login = async (req, res) => {
 
     try {
-        const { email, password } = req.body;
+        const { username, password } = req.body;
         // get all the emails
         const { data, error } = await supabase
             .from('users')
             .select("user_id, *")
-            .eq('email', email)
+            .eq('username', username)
             .single();
 
         // check if the email is existing
@@ -90,35 +90,6 @@ exports.login = async (req, res) => {
         if (!passwordMatch) {
             return res.status(400).json({ message: "Incorrect Password" });
         }
-        // generates JWT token
-        // const token = jwt.sign(
-        //     {
-        //         user_id: data.user_id,
-        //         email: data.email,
-        //     },
-        //     jwtSecret,
-        //     {
-        //         expiresIn: "1m"
-        //     }
-        // );
-
-        // //refresh token
-        // const refresh_Token = jwt.sign({
-        //     user_id: data.user_id,
-        // }, refreshToken, {
-        //     expiresIn: "5m"
-        // });
-
-        // // store the refresh token in the database
-        // const {error: refreshError} = await supabase
-        //     .from('users')
-        //     .update({refresh_token: refresh_Token})
-        //     .eq('user_id', data.user_id);
-
-        // if(refreshError) {
-        //     console.error("Error storing refresh token:", refresh_Token.message);
-        //     return res.status(500).json({messsage: "Error occured when storing the refresh token"})
-        // }
 
         return res.status(200).json({ message: "Login successful", data });
     } catch (error) {

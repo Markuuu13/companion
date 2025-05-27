@@ -8,28 +8,20 @@ import 'package:flutter/material.dart';
 class AppService {
   Future<bool> existingUsername(BuildContext context, String username) async {
     try {
-      final response = await http.get(
+      final response = await http.post(
         Uri.parse("$backendUrl/existingUsername"),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'username': username}),
       );
 
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        final data = responseData['data'];
-
-        if (data.contains(username)) {
-          showErrorToast(context, 'Username already exists');
-          return true; // Username exists
-        } else {
-          showSuccessToast(context, 'Username is available');
-          return false; // Username is available
-        }
-      } else {
-        showErrorToast(context, 'Error occured while checking username');
         return false;
+      } else {
+        return true;
       }
     } catch (e) {
       print("Exception: $e");
-      showErrorToast(context, 'Error occured while checking username');
+      showErrorToast(context, 'Error occured');
       return false;
     }
   }

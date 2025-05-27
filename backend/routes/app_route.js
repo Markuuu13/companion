@@ -3,5 +3,5 @@ const { getGradeLevel, getEducationLevel, deleteUser, existingUsername } = requi
 router.get('/gradelevel', getGradeLevel);
 router.get('/educationlevel', getEducationLevel);   
 router.delete('/deleteUser', deleteUser);
-router.get('/existingUsername', existingUsername);
+router.post('/existingUsername', existingUsername);
 module.exports = router;

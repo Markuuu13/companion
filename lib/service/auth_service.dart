@@ -131,13 +131,13 @@ class AuthService {
   // }
   Future<bool> signIn({
     required BuildContext context,
-    required String email,
+    required String username,
     required String password,
   }) async {
     try {
       var response = await http.post(
         Uri.parse('$backendUrl/login'),
-        body: jsonEncode({'email': email, 'password': password}),
+        body: jsonEncode({'username': username, 'password': password}),
         headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
         },

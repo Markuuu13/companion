@@ -74,10 +74,10 @@ exports.existingUsername = async (req, res) => {
 
         // it returns message 
         if (existingUser) {
-            return res.status(409).json({ message: "This username is already in use." });
+            return res.status(409).json({ message: "This username is already in use.", exists: true });
         }
 
-        return res.status(200).json({ message: "This username is available." })
+        return res.status(200).json({ message: "This username is available." , exists: false})
     } catch (error) {
         console.error("Error checking username: ", error);
         return res.status(500).json({ message: 'Internal Server Error, Please try again.' });

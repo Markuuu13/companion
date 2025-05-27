@@ -18,14 +18,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController username = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   AuthService authService = AuthService();
   bool isToastVisible = false;
 
   @override
   void dispose() {
-    emailController.dispose();
+    username.dispose();
     passwordController.dispose();
     isToastVisible = false;
     super.dispose();
@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   void login() async {
     try {
       bool isEmpty =
-          emailController.text.trim().isEmpty ||
+          username.text.trim().isEmpty ||
           passwordController.text.trim().isEmpty;
 
       if (isEmpty) {
@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
 
       bool successLogin = await authService.signIn(
         context: context,
-        email: emailController.text.trim(),
+        username: username.text.trim(),
         password: passwordController.text.trim(),
       );
 
@@ -105,9 +105,9 @@ class _LoginPageState extends State<LoginPage> {
                   Image.asset("assets/companion_logo.png", width: 250),
                   SizedBox(height: 60),
                   CustomTextField(
-                    labeltext: 'Email Address',
-                    icon: Icon(Icons.email),
-                    controller: emailController,
+                    labeltext: 'Username',
+                    icon: Icon(Icons.person),
+                    controller: username,
                   ),
                   SizedBox(height: 40),
                   CustomTextField(
