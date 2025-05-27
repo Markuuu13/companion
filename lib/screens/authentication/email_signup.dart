@@ -9,14 +9,13 @@ import 'setpassword.dart';
 import 'verifyemail.dart';
 
 class EmailSignup extends StatefulWidget {
-  final String firstname;
-  final String lastname;
+  final String username;
+
   final String educationLevel;
   final String selectedGrade;
   const EmailSignup({
     super.key,
-    required this.firstname,
-    required this.lastname,
+    required this.username,
     required this.educationLevel,
     required this.selectedGrade,
   });
@@ -38,8 +37,7 @@ class _EmailSignupState extends State<EmailSignup> {
 
   void verifyUserEmail(
     String emailAddress,
-    String firstname,
-    String lastname,
+    String username,
     String educationLevel,
     String selectedGrade,
     String password,
@@ -76,8 +74,7 @@ class _EmailSignupState extends State<EmailSignup> {
         Get.to(
           () => VerifyEmail(
             email: emailAddress,
-            firstname: firstname,
-            lastname: lastname,
+            username: username,
             educationLevel: educationLevel,
             selectedGrade: selectedGrade,
             password: passwordController.text.trim(),
@@ -142,7 +139,7 @@ class _EmailSignupState extends State<EmailSignup> {
                       style: GoogleFonts.workSans(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: Colors.black45,
+                        color: Colors.black54,
                       ),
                     ),
                   ],
@@ -222,8 +219,7 @@ class _EmailSignupState extends State<EmailSignup> {
                     onTap:
                         () => verifyUserEmail(
                           emailController.text.trim(),
-                          widget.firstname,
-                          widget.lastname,
+                          widget.username,
                           widget.educationLevel,
                           widget.selectedGrade,
                           passwordController.text.trim(),

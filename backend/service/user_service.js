@@ -10,7 +10,7 @@ exports.register = async (req, res) => {
     console.log("Received Body:", req.body);
 
     try {
-        const { firstname, lastname, educationLevel, selectedGrade, email, password, otp } = req.body;
+        const { username, educationLevel, selectedGrade, email, password, otp } = req.body;
 
         const hashedPassword = await bcrypt.hash(password, 8);
 
@@ -27,8 +27,7 @@ exports.register = async (req, res) => {
 
         // creates account
         const { data, error } = await supabase.from("users").insert({
-            firstname,
-            lastname,
+            username,
             educationLevel,
             selectedGrade,
             email,

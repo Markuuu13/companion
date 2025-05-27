@@ -9,16 +9,14 @@ import '../../constants.dart';
 import 'setpassword.dart';
 
 class VerifyEmail extends StatefulWidget {
-  final String firstname;
-  final String lastname;
+  final String username;
   final String email;
   final String educationLevel;
   final String selectedGrade;
   final String password;
   const VerifyEmail({
     super.key,
-    required this.firstname,
-    required this.lastname,
+    required this.username,
     required this.email,
     required this.educationLevel,
     required this.password,
@@ -42,8 +40,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
 
   void signUp(
     String email,
-    String firstname,
-    String lastname,
+    String username,
     String password,
     String educationLevel,
     String selectedGrade,
@@ -53,8 +50,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
       authService.signUp(
         context: context,
         email: email,
-        firstname: firstname,
-        lastname: lastname,
+        username: username,
         password: password,
         educationLevel: educationLevel,
         selectedGrade: selectedGrade,
@@ -140,8 +136,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
                     onTap:
                         () => signUp(
                           widget.email,
-                          widget.firstname,
-                          widget.lastname,
+                          widget.username,
                           widget.password,
                           widget.educationLevel,
                           widget.selectedGrade,

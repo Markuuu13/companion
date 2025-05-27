@@ -58,5 +58,28 @@ exports.deleteUser = async (req, res) => {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", error: error.message });
     }
+
+
 }
 
+exports.existingUsername = async (req, res) => {
+    try {
+        const { username } = req.body;
+
+        const { data: existingUser, error: errorUser } = await supabase
+            .from("users")
+            .select("username")
+            .eq('username', username)
+            .single();
+
+        // it returns message 
+        if (existingUser) {
+            return res.status(409).json({ message: "This username is already in use." });
+        }
+
+        return res.status(200).json({ message: "This username is available." })
+    } catch (error) {
+        console.error("Error checking username: ", error);
+        return res.status(500).json({ message: 'Internal Server Error, Please try again.' });
+    }
+}

@@ -120,14 +120,14 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(top: 10, right: 35),
+                        padding: const EdgeInsets.only(top: 10, right: 25),
                         child: GestureDetector(
                           onTap: () {
                             Get.to(() => ForgotPasswordPage());
                           },
                           child: Text(
                             "Forgot Password?",
-                            style: TextStyle(
+                            style: GoogleFonts.workSans(
                               color: mainColor,
                               fontWeight: FontWeight.bold,
                             ),
@@ -152,10 +152,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         child: Text(
                           "Log in",
-                          style: TextStyle(
+                          style: GoogleFonts.workSans(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                            fontSize: 18,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -171,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Text(
                             "Or continue with",
-                            style: TextStyle(color: Colors.grey),
+                            style: GoogleFonts.workSans(color: Colors.grey),
                           ),
                         ),
                         Expanded(child: Divider()),

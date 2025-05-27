@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../components/textfield.dart';
 import '../../components/textfield_register.dart';
+import '../../service/user_service.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -18,8 +19,7 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final TextEditingController firstname = TextEditingController();
-  final TextEditingController lastname = TextEditingController();
+  final TextEditingController username = TextEditingController();
   AppService appService = AppService();
 
   String? selectedEducationLevel;
@@ -32,11 +32,40 @@ class _SignupPageState extends State<SignupPage> {
 
   bool isToastVisible = false;
 
+  void existingUsername(String username) async {
+    try {
+      bool isExisting = await appService.existingUsername(context, username);
+
+      if (isExisting) {
+        if (!isToastVisible) {
+          isToastVisible = true;
+
+          showErrorToast(context, 'Username already exists');
+
+          Future.delayed(Duration(seconds: 2), () {
+            isToastVisible = false;
+          });
+        }
+      } else {
+        if (!isToastVisible) {
+          isToastVisible = true;
+
+          showSuccessToast(context, 'Username is available');
+
+          Future.delayed(Duration(seconds: 2), () {
+            isToastVisible = false;
+          });
+        }
+      }
+    } catch (e) {
+      print("Exception: $e");
+      showErrorToast(context, 'Error occurred while checking username');
+    }
+  }
   void next() {
     try {
       bool isEmpty =
-          firstname.text.trim().isEmpty ||
-          lastname.text.trim().isEmpty ||
+          username.text.trim().isEmpty ||
           selectedEducationLevel == null ||
           selectedGrade == null;
 
@@ -55,8 +84,7 @@ class _SignupPageState extends State<SignupPage> {
 
       Get.to(
         () => EmailSignup(
-          firstname: firstname.text.trim(),
-          lastname: lastname.text.trim(),
+          username: username.text.trim(),
           educationLevel: selectedEducationLevel!,
           selectedGrade: selectedGrade!,
         ),
@@ -75,14 +103,15 @@ class _SignupPageState extends State<SignupPage> {
     loadPrimaryEducGradeLevel();
     loadSecondaryEducGradeLevel();
     loadTertiaryEducGradeLevel();
+
+
     super.initState();
   }
 
   @override
   void dispose() {
     isToastVisible = false;
-    firstname.dispose();
-    lastname.dispose();
+    username.dispose();
     selectedEducationLevel = null;
     super.dispose();
   }
@@ -120,154 +149,186 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     Text(
-                      "Starts on giving your some information",
+                      "Set up your account to get started",
                       style: GoogleFonts.workSans(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: Colors.black45,
+                        color: Colors.black87,
                       ),
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 40),
-              TextfieldRegister(labeltext: 'First name', controller: firstname),
+              TextfieldRegister(labeltext: 'Username', controller: username),
               SizedBox(height: 20),
-              TextfieldRegister(labeltext: 'Last name', controller: lastname),
-              SizedBox(height: 20),
+              // TextfieldRegister(labeltext: 'Last name', controller: lastname),
+              // SizedBox(height: 20),
               // Text(educationLevels.toString()),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: DropdownButtonFormField(
-                  value: selectedEducationLevel,
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  hint: Text(
-                    "Select your Education Level",
-                    style: GoogleFonts.workSans(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(50),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(50),
+                        spreadRadius: 0,
+                        blurRadius: 3,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                   ),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: mainColor,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(
-                        50,
-                      ), // Rounded corners
+                  child: DropdownButtonFormField(
+                    value: selectedEducationLevel,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    hint: Text(
+                      "Select your Education Level",
+                      style: GoogleFonts.workSans(
+                        color: Colors.grey[500],
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  dropdownColor: mainColor,
-                  icon: Icon(Icons.arrow_drop_down, color: Colors.white),
-                  items:
-                      educationLevels.map<DropdownMenuItem>((dynamic value) {
-                        return DropdownMenuItem(
-                          value: value.toString(),
-                          child: Text(
-                            value.toString(),
-                            style: GoogleFonts.workSans(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    dropdownColor: Colors.white,
+                    icon: const Icon(
+                      Icons.arrow_drop_down,
+                      color: Colors.black,
+                    ),
+                    items:
+                        educationLevels.map<DropdownMenuItem>((dynamic value) {
+                          return DropdownMenuItem(
+                            value: value.toString(),
+                            child: Text(
+                              value.toString(),
+                              style: GoogleFonts.workSans(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                        );
-                      }).toList(),
-
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedEducationLevel = newValue;
-                      selectedGrade = null;
-                    });
-                  },
+                          );
+                        }).toList(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedEducationLevel = newValue;
+                        selectedGrade = null;
+                      });
+                    },
+                  ),
                 ),
               ),
               SizedBox(height: 20),
               if (selectedEducationLevel != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: DropdownButtonFormField(
-                    value: selectedGrade,
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    hint: Text(
-                      "Select your Education Level",
-                      style: GoogleFonts.workSans(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(50),
+                          spreadRadius: 0,
+                          blurRadius: 3,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
                     ),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: mainColor,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(
-                          50,
-                        ), // Rounded corners
+                    child: DropdownButtonFormField(
+                      value: selectedGrade,
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      hint: Text(
+                        "Select your Education Level",
+                        style: GoogleFonts.workSans(
+                          color: Colors.grey[500],
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(
+                            50,
+                          ), // Rounded corners
+                        ),
+                      ),
+                      dropdownColor: Colors.white,
+                      icon: Icon(Icons.arrow_drop_down, color: Colors.black),
+                      items:
+                          selectedEducationLevel == 'Primary Education'
+                              ? primaryEducGradeLevel.map<DropdownMenuItem>((
+                                dynamic value,
+                              ) {
+                                return DropdownMenuItem(
+                                  value: value.toString(),
+
+                                  child: Text(
+                                    value.toString(),
+                                    style: GoogleFonts.workSans(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                );
+                              }).toList()
+                              : selectedEducationLevel == 'Secondary Education'
+                              ? secondaryEducGradeLevel.map<DropdownMenuItem>((
+                                dynamic value,
+                              ) {
+                                return DropdownMenuItem(
+                                  value: value.toString(),
+                                  child: Text(
+                                    value.toString(),
+                                    style: GoogleFonts.workSans(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                );
+                              }).toList()
+                              : selectedEducationLevel == 'Tertiary Education'
+                              ? tertiaryEducGradeLevel.map<DropdownMenuItem>((
+                                dynamic value,
+                              ) {
+                                return DropdownMenuItem(
+                                  value: value.toString(),
+                                  child: Text(
+                                    value.toString(),
+                                    style: GoogleFonts.workSans(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                );
+                              }).toList()
+                              : null,
+
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedGrade = newValue;
+                        });
+                      },
                     ),
-                    dropdownColor: mainColor,
-                    icon: Icon(Icons.arrow_drop_down, color: Colors.white),
-                    items:
-                        selectedEducationLevel == 'Primary Education'
-                            ? primaryEducGradeLevel.map<DropdownMenuItem>((
-                              dynamic value,
-                            ) {
-                              return DropdownMenuItem(
-                                value: value.toString(),
-
-                                child: Text(
-                                  value.toString(),
-                                  style: GoogleFonts.workSans(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              );
-                            }).toList()
-                            : selectedEducationLevel == 'Secondary Education'
-                            ? secondaryEducGradeLevel.map<DropdownMenuItem>((
-                              dynamic value,
-                            ) {
-                              return DropdownMenuItem(
-                                value: value.toString(),
-                                child: Text(
-                                  value.toString(),
-                                  style: GoogleFonts.workSans(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              );
-                            }).toList()
-                            : selectedEducationLevel == 'Tertiary Education'
-                            ? tertiaryEducGradeLevel.map<DropdownMenuItem>((
-                              dynamic value,
-                            ) {
-                              return DropdownMenuItem(
-                                value: value.toString(),
-                                child: Text(
-                                  value.toString(),
-                                  style: GoogleFonts.workSans(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              );
-                            }).toList()
-                            : null,
-
-                    onChanged: (newValue) {
-                      setState(() {
-                        selectedGrade = newValue;
-                      });
-                    },
                   ),
                 ),
               Center(

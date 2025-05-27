@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 var backendUrl = 'http://192.168.100.42:3500';
 
 var mainColor = Color(0xFFFF7559);
-var signUpBg = Color(0xFFFD907A);
+var txtfield = Color(0xFFFF7559);
 var completeColor = Color(0xFF5BEF8D);
 var notStarted = Color(0xFFFF6262);
 var red = Color(0xFFC64242);

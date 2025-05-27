@@ -22,8 +22,7 @@ class AuthService {
   void signUp({
     required BuildContext context,
     required String email,
-    required String firstname,
-    required String lastname,
+    required String username,
     required String password,
     required String educationLevel,
     required String selectedGrade,
@@ -33,8 +32,7 @@ class AuthService {
       User user = User(
         id: '',
         email: email,
-        firstname: firstname,
-        lastname: lastname,
+        username: username,
         password: password,
         educationLevel: educationLevel,
         selectedGrade: selectedGrade,

@@ -4,8 +4,7 @@ import 'dart:convert';
 class User {
   final String id;
   final String email;
-  final String firstname;
-  final String lastname;
+  final String username;
   final String password;
   final String educationLevel;
   final String selectedGrade;
@@ -14,8 +13,7 @@ class User {
   User({
     required this.id,
     required this.email,
-    required this.firstname,
-    required this.lastname,
+    required this.username,
     required this.password,
     required this.educationLevel,
     required this.selectedGrade,
@@ -26,8 +24,7 @@ class User {
     return <String, dynamic>{
       'id': id,
       'email': email,
-      'firstname': firstname,
-      'lastname': lastname,
+      'username': username,
       'password': password,
       'educationLevel': educationLevel,
       'selectedGrade': selectedGrade,
@@ -39,8 +36,7 @@ class User {
     return User(
       id: map['id'] as String,
       email: map['email'] as String,
-      firstname: map['firstname'] as String,
-      lastname: map['lastname'] as String,
+      username: map['username'] as String,
       password: map['password'] as String,
       educationLevel: map['educationLevel'] as String,
       selectedGrade: map['selectedGrade'] as String,

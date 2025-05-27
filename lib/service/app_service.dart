@@ -6,6 +6,34 @@ import '../constants.dart';
 import 'package:flutter/material.dart';
 
 class AppService {
+  Future<bool> existingUsername(BuildContext context, String username) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$backendUrl/existingUsername"),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        final data = responseData['data'];
+
+        if (data.contains(username)) {
+          showErrorToast(context, 'Username already exists');
+          return true; // Username exists
+        } else {
+          showSuccessToast(context, 'Username is available');
+          return false; // Username is available
+        }
+      } else {
+        showErrorToast(context, 'Error occured while checking username');
+        return false;
+      }
+    } catch (e) {
+      print("Exception: $e");
+      showErrorToast(context, 'Error occured while checking username');
+      return false;
+    }
+  }
+
   Future<List<dynamic>> fetchEducationLevel(BuildContext context) async {
     try {
       final response = await http.get(Uri.parse('$backendUrl/educationlevel'));
@@ -28,7 +56,9 @@ class AppService {
     }
   }
 
-  Future<List<dynamic>> fetchPrimaryEducationLevels(BuildContext context) async {
+  Future<List<dynamic>> fetchPrimaryEducationLevels(
+    BuildContext context,
+  ) async {
     try {
       final response = await http.get(Uri.parse('$backendUrl/gradelevel'));
 
@@ -59,7 +89,9 @@ class AppService {
     }
   }
 
-  Future<List<dynamic>> fetchSecondaryEducationLevels(BuildContext context) async {
+  Future<List<dynamic>> fetchSecondaryEducationLevels(
+    BuildContext context,
+  ) async {
     try {
       final response = await http.get(Uri.parse('$backendUrl/gradelevel'));
 
@@ -90,7 +122,9 @@ class AppService {
     }
   }
 
-  Future<List<dynamic>> fetchTertiaryEducationLevels(BuildContext context) async {
+  Future<List<dynamic>> fetchTertiaryEducationLevels(
+    BuildContext context,
+  ) async {
     try {
       final response = await http.get(Uri.parse('$backendUrl/gradelevel'));
 
@@ -109,7 +143,7 @@ class AppService {
 
         return tertiaryEducationLevels;
       } else {
-       showErrorToast(
+        showErrorToast(
           context,
           'Error occured while fetching tertiary education levels. Refresh the Screen',
         );
