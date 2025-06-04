@@ -262,10 +262,6 @@ class _SignupPageState extends State<SignupPage> {
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 16,
-                      ),
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(50),
