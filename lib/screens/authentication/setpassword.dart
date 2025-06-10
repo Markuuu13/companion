@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../components/textfield_register.dart';
 import '../../constants.dart';
-import 'verifyemail.dart';
 
 class SetPassword extends StatefulWidget {
   final String username;

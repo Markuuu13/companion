@@ -5,12 +5,10 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../components/textfield_register.dart';
 import '../../constants.dart';
 import '../../service/auth_service.dart';
-import 'setpassword.dart';
 import 'verifyemail.dart';
 
 class EmailSignup extends StatefulWidget {
   final String username;
-
   final String educationLevel;
   final String selectedGrade;
   const EmailSignup({

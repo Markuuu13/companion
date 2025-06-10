@@ -1,8 +1,5 @@
-import 'package:companion/components/textfield_register.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../components/textfield.dart';
 import '../../constants.dart';
 
 class ForgotPasswordPage extends StatefulWidget {

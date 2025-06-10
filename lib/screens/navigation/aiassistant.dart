@@ -1,5 +1,4 @@
 import 'package:companion/components/ai_txtfield.dart';
-import 'package:companion/components/textfield.dart';
 import 'package:companion/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

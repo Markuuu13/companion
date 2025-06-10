@@ -1,5 +1,3 @@
-import 'package:companion/models/user_model.dart';
-import 'package:companion/screens/navigation/profile.dart';
 import 'package:companion/service/app_service.dart';
 import 'package:companion/service/user_service.dart';
 import 'package:flutter/material.dart';

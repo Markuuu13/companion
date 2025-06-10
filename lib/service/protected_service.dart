@@ -33,5 +33,6 @@ class ProtectedService {
     } catch (e) {
       print('Error: ${e.toString()}');
     }
+    return null;
   }
 }

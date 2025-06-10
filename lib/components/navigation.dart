@@ -9,6 +9,7 @@ import '../screens/navigation/aiassistant.dart';
 import '../screens/navigation/home.dart';
 import '../screens/navigation/profile.dart';
 import '../screens/navigation/settings.dart';
+import '../service/schedule_service.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({super.key});
@@ -26,7 +27,10 @@ class _NavigationState extends State<Navigation> {
   // Fetching user details
   final AuthService authService = AuthService();
   final UserService userService = UserService();
+  final ScheduleService scheduleService = ScheduleService();
+
   Map<String, dynamic>? userProfile;
+  List<dynamic>? scheduleToday;
   final box = GetStorage();
 
   List pages = [Home(), Profile(), AiAssistant(), Settings()];
@@ -39,7 +43,22 @@ class _NavigationState extends State<Navigation> {
       setState(() {
         userProfile = details;
       });
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> getScheduleToday() async {
+    final userId = box.read('userid');
+
+    try {
+      final schedules = await scheduleService.scheduleToday(context, userId);
+      setState(() {
+        scheduleToday = schedules;
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -47,6 +66,7 @@ class _NavigationState extends State<Navigation> {
     // TODO: implement initState
     super.initState();
     _loadUserProfile();
+    getScheduleToday();
   }
 
   @override
@@ -103,7 +123,7 @@ class _NavigationState extends State<Navigation> {
                       userProfile == null
                           ? Center(child: CircularProgressIndicator())
                           : Text(
-                            "${userProfile!['firstname']} ${userProfile!['lastname']}",
+                            "${userProfile!['username']}",
                             style: GoogleFonts.workSans(
                               color: Colors.black,
                               fontSize: 18,
@@ -111,7 +131,13 @@ class _NavigationState extends State<Navigation> {
                             ),
                           ),
                       Text(
-                        "3 pending tasks",
+                        scheduleToday == null
+                            ? "Loading tasks..."
+                            : scheduleToday!
+                                .where((sched) => sched['status_id'] == 2)
+                                .isEmpty
+                            ? "No pending tasks"
+                            : "${scheduleToday!.where((sched) => sched['status_id'] == 2).length} pending task(s)",
                         style: GoogleFonts.workSans(
                           color: Colors.deepOrange,
                           fontWeight: FontWeight.w600,

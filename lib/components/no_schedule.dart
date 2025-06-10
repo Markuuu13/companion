@@ -1,9 +1,5 @@
-import 'package:companion/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../screens/other_pages/add_sched.dart';
 
 class NoSchedule extends StatelessWidget {
   const NoSchedule({super.key});

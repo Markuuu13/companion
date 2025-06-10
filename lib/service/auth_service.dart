@@ -1,9 +1,5 @@
 import 'dart:convert';
-
-import 'package:cherry_toast/cherry_toast.dart';
-import 'package:companion/components/utils.dart';
 import 'package:companion/screens/authentication/login.dart';
-import 'package:companion/screens/authentication/verifyemail.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,7 +8,6 @@ import 'package:http/http.dart' as http;
 
 import '../constants.dart';
 import '../models/user_model.dart';
-import 'user_service.dart';
 
 class AuthService {
   final box = GetStorage();

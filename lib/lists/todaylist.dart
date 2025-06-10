@@ -1,10 +1,12 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constants.dart';
 
 class TodaysGridBuilder extends StatefulWidget {
-  const TodaysGridBuilder({super.key});
+  final List<dynamic>? scheduleTodayData;
+  const TodaysGridBuilder({super.key, required this.scheduleTodayData});
 
   @override
   State<TodaysGridBuilder> createState() => _TodaysGridBuilderState();
@@ -19,32 +21,50 @@ class _TodaysGridBuilderState extends State<TodaysGridBuilder> {
     {"color": red, "title": "Assignment", "status": completeColor},
     {"color": red, "title": "Assignment", "status": completeColor},
   ];
+
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      physics: NeverScrollableScrollPhysics(),
+      physics: AlwaysScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 1,
         crossAxisSpacing: 5,
         childAspectRatio: 4 / 1,
       ),
-      itemCount: sample.length,
+      itemCount: widget.scheduleTodayData!.length,
       itemBuilder: (context, index) {
-        final data = sample[index];
+        final data = widget.scheduleTodayData![index];
+        print(data['title']);
         return buildPlanTile(
-          preferColor: data['color'],
+          context: context,
           title: data['title'],
-          status: data['status'],
+          status:
+              data['status_id'] == 1
+                  ? red
+                  : data['status_id'] == 2
+                  ? orange
+                  : data['status_id'] == 3
+                  ? green
+                  : Colors.grey,
+          preferColor: green,
+          timeScheduled: parseTime(data['dateScheduledTime']),
         );
       },
     );
   }
 }
 
+TimeOfDay parseTime(String timeStr) {
+  final parts = timeStr.split(':');
+  return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+}
+
 Widget buildPlanTile({
+  required BuildContext context,
   required Color preferColor,
   required String title,
   required Color status,
+  required TimeOfDay timeScheduled,
 }) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -75,7 +95,7 @@ Widget buildPlanTile({
           Row(
             children: [
               Text(
-                "4:30 PM",
+                timeScheduled.format(context),
                 style: GoogleFonts.workSans(
                   fontSize: 15,
                   color: Colors.white,

@@ -1,23 +1,24 @@
-import 'package:companion/screens/authentication/login.dart';
+import 'package:companion/screens/authentication/verifyemail.dart';
+import 'package:companion/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
-import 'components/navigation.dart';
+import 'screens/authentication/successful.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
-  await GetStorage.init();
-  final box = GetStorage();
-  final userId = box.read('userid');
+  // await GetStorage.init();
+  // final box = GetStorage();
+  // final userId = box.read('userid');
 
-  runApp(MyApp(userId: userId));
+  // runApp(MyApp(userId: userId));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final dynamic userId;
-  const MyApp({super.key, required this.userId});
+  // final dynamic userId;
+  const MyApp({super.key,});
 
   // This widget is the root of your application.
   @override
@@ -34,7 +35,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: userId != null ? Navigation() : LoginPage(),
+      home: SuccessfullyVerified(),
+      // home: userId != null ? Navigation() : LoginPage(),
     );
   }
 }

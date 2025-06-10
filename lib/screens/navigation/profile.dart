@@ -1,9 +1,6 @@
 import 'package:companion/constants.dart';
-import 'package:companion/service/auth_service.dart';
-import 'package:companion/service/protected_service.dart';
 import 'package:companion/service/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -95,9 +92,9 @@ class _ProfileState extends State<Profile> {
                       ),
                       SizedBox(height: 30),
                       buildUserDetails(
-                        title: "Name",
+                        title: "Username",
                         userDetails:
-                            "${userProfile!['firstname']} ${userProfile!['lastname']}",
+                            "${userProfile!['username']}",
                       ),
                       SizedBox(height: 30),
                       buildUserDetails(

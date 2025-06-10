@@ -8,10 +8,7 @@ import 'package:companion/service/app_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../components/textfield.dart';
 import '../../components/textfield_register.dart';
-import '../../service/user_service.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});

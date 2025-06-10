@@ -1,5 +1,4 @@
 import 'package:companion/constants.dart';
-import 'package:companion/main.dart';
 import 'package:companion/screens/authentication/signup.dart';
 import 'package:flutter/material.dart';
 

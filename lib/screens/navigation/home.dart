@@ -6,7 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../components/no_schedule.dart';
-import '../../headers.dart';
+import '../../service/schedule_service.dart';
 import '../../service/user_service.dart';
 import '../other_pages/add_sched.dart';
 
@@ -19,12 +19,18 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final UserService userService = UserService();
+  final ScheduleService scheduleService = ScheduleService();
+
   Map<String, dynamic>? userProfile;
+  List<dynamic>? scheduleToday;
+
   final box = GetStorage();
+
   @override
   void initState() {
     super.initState();
     _loadUserProfile();
+    getScheduleToday();
   }
 
   Future<void> _loadUserProfile() async {
@@ -40,6 +46,19 @@ class _HomeState extends State<Home> {
     }
   }
 
+  Future<void> getScheduleToday() async {
+    final userId = box.read('userid');
+
+    try {
+      final schedules = await scheduleService.scheduleToday(context, userId);
+      setState(() {
+        scheduleToday = schedules;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,10 +66,14 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: () => Get.to(() => AddSchedule()),
+            onPressed: () {
+              Get.to(() => AddSchedule())?.then((_) {
+                getScheduleToday();
+              });
+            },
             icon: Icon(Icons.add, color: completeColor, size: 35),
           ),
-          SizedBox(width: 5,),
+          SizedBox(width: 5),
         ],
       ),
       body: SafeArea(
@@ -67,7 +90,7 @@ class _HomeState extends State<Home> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Hi ${userProfile!['firstname']} ${userProfile!['lastname']}",
+                              "Hi ${userProfile!['username']}",
                               style: GoogleFonts.workSans(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
@@ -120,7 +143,19 @@ class _HomeState extends State<Home> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Expanded(child: Center(child: NoSchedule())),
+
+                              Expanded(
+                                child:
+                                    scheduleToday == null
+                                        ? Center(
+                                          child: CircularProgressIndicator(),
+                                        )
+                                        : scheduleToday!.isEmpty
+                                        ? NoSchedule()
+                                        : TodaysGridBuilder(
+                                          scheduleTodayData: scheduleToday,
+                                        ),
+                              ),
                             ],
                           ),
                         ),

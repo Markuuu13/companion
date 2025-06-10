@@ -1,5 +1,6 @@
 import 'package:companion/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -154,7 +155,7 @@ class _AddScheduleState extends State<AddSchedule> {
                     ),
                   ),
                   SizedBox(height: 15),
-      
+
                   // Title
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10, top: 20),
@@ -167,12 +168,18 @@ class _AddScheduleState extends State<AddSchedule> {
                       ),
                     ),
                   ),
-      
+
                   AddSchedTxtField(
                     hintText: 'Enter the title',
                     controller: titleController,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z0-9\s]'),
+                      ),
+                      LengthLimitingTextInputFormatter(60),
+                    ],
                   ),
-      
+
                   //Description
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10, top: 20),
@@ -201,8 +208,16 @@ class _AddScheduleState extends State<AddSchedule> {
                   AddSchedTxtField(
                     hintText: 'Description about your plan',
                     controller: descController,
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z0-9\s]'),
+                      ),
+                      LengthLimitingTextInputFormatter(300),
+                    ],
                   ),
-      
+
                   //Subject-Course
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10, top: 20),
@@ -218,8 +233,14 @@ class _AddScheduleState extends State<AddSchedule> {
                   AddSchedTxtField(
                     hintText: 'On what subject/course?',
                     controller: subjController,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z0-9\s]'),
+                      ),
+                      LengthLimitingTextInputFormatter(30),
+                    ],
                   ),
-      
+
                   // Deadline of the Task
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10, top: 20),
@@ -244,7 +265,7 @@ class _AddScheduleState extends State<AddSchedule> {
                           controller: deadlineDateController,
                         ),
                       ),
-      
+
                       SizedBox(width: 20),
                       Expanded(
                         child: AddSchedTxtField(
@@ -284,7 +305,7 @@ class _AddScheduleState extends State<AddSchedule> {
                     child: Row(
                       children: [
                         Text(
-                          "Date Schedule",
+                          "When to do the Task?",
                           style: GoogleFonts.workSans(
                             color: mainColor,
                             fontSize: 18,
@@ -325,7 +346,7 @@ class _AddScheduleState extends State<AddSchedule> {
                           controller: scheduleDateController,
                         ),
                       ),
-      
+
                       SizedBox(width: 20),
                       Expanded(
                         child: AddSchedTxtField(
@@ -412,7 +433,7 @@ class _AddScheduleState extends State<AddSchedule> {
                         ),
                       ],
                     ),
-      
+
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 30),
                     child: Row(
@@ -434,7 +455,6 @@ class _AddScheduleState extends State<AddSchedule> {
                                   ),
                                 ),
                               ),
-                              Text(''),
                             ],
                           )
                         else
@@ -452,7 +472,7 @@ class _AddScheduleState extends State<AddSchedule> {
                             ),
                           ),
                         SizedBox(width: 20),
-      
+
                         if (isAutoSchedAvailable)
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -551,7 +571,6 @@ class _AddScheduleState extends State<AddSchedule> {
           scheduleDateController.text = formattedDate;
         });
       }
-
     } catch (e) {
       print(e.toString());
     }
