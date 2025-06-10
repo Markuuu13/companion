@@ -146,154 +146,91 @@ class _SignupPageState extends State<SignupPage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Icon(Icons.arrow_back, color: Colors.black),
-              ),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Create your Account",
-                      style: GoogleFonts.workSans(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: mainColor,
-                      ),
-                    ),
-                    Text(
-                      "Set up your account to get started",
-                      style: GoogleFonts.workSans(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
                 ),
-              ),
-              SizedBox(height: 40),
-              TextfieldRegister(labeltext: 'Username', controller: username),
-              if (isExistingUsername != null)
+                SizedBox(height: 20),
                 Padding(
-                  padding: const EdgeInsets.only(left: 30, top: 10),
-                  child: Row(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
-                        isExistingUsername == true
-                            ? Icons.cancel_outlined
-                            : Icons.check_circle_rounded,
-                        color: isExistingUsername == true ? red : green,
+                      Text(
+                        "Create your Account",
+                        style: GoogleFonts.workSans(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: mainColor,
+                        ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          isExistingUsername == true
-                              ? "Username already exists"
-                              : "Username is available",
-                          style: GoogleFonts.workSans(
-                            color: isExistingUsername == true ? red : green,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      Text(
+                        "Set up your account to get started",
+                        style: GoogleFonts.workSans(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
                         ),
                       ),
                     ],
                   ),
                 ),
-              if (username.text.trim().length < 2 &&
-                  username.text.trim().isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 5,
-                  ),
-                  child: Text(
-                    "Username must be at least 2 characters",
-                    style: GoogleFonts.workSans(
-                      color: mainColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                SizedBox(height: 40),
+                TextfieldRegister(labeltext: 'Username', controller: username),
+                if (isExistingUsername != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30, top: 10),
+                    child: Row(
+                      children: [
+                        Icon(
+                          isExistingUsername == true
+                              ? Icons.cancel_outlined
+                              : Icons.check_circle_rounded,
+                          color: isExistingUsername == true ? red : green,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            isExistingUsername == true
+                                ? "Username already exists"
+                                : "Username is available",
+                            style: GoogleFonts.workSans(
+                              color: isExistingUsername == true ? red : green,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-
-              SizedBox(height: 20),
-              // TextfieldRegister(labeltext: 'Last name', controller: lastname),
-              // SizedBox(height: 20),
-              // Text(educationLevels.toString()),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(50),
-                        spreadRadius: 0,
-                        blurRadius: 3,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: DropdownButtonFormField(
-                    value: selectedEducationLevel,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    hint: Text(
-                      "Select your Education Level",
+                if (username.text.trim().length < 2 &&
+                    username.text.trim().isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 5,
+                    ),
+                    child: Text(
+                      "Username must be at least 2 characters",
                       style: GoogleFonts.workSans(
-                        color: Colors.grey[500],
-                        fontSize: 16,
+                        color: mainColor,
+                        fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    dropdownColor: Colors.white,
-                    icon: const Icon(
-                      Icons.arrow_drop_down,
-                      color: Colors.black,
-                    ),
-                    items:
-                        educationLevels.map<DropdownMenuItem>((dynamic value) {
-                          return DropdownMenuItem(
-                            value: value.toString(),
-                            child: Text(
-                              value.toString(),
-                              style: GoogleFonts.workSans(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        selectedEducationLevel = newValue;
-                        selectedGrade = null;
-                      });
-                    },
                   ),
-                ),
-              ),
-              SizedBox(height: 20),
-              if (selectedEducationLevel != null)
+            
+                SizedBox(height: 20),
+                // TextfieldRegister(labeltext: 'Last name', controller: lastname),
+                // SizedBox(height: 20),
+                // Text(educationLevels.toString()),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Container(
@@ -310,8 +247,8 @@ class _SignupPageState extends State<SignupPage> {
                       ],
                     ),
                     child: DropdownButtonFormField(
-                      value: selectedGrade,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      value: selectedEducationLevel,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       hint: Text(
                         "Select your Education Level",
                         style: GoogleFonts.workSans(
@@ -325,102 +262,167 @@ class _SignupPageState extends State<SignupPage> {
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(
-                            50,
-                          ), // Rounded corners
+                          borderRadius: BorderRadius.circular(50),
                         ),
                       ),
                       dropdownColor: Colors.white,
-                      icon: Icon(Icons.arrow_drop_down, color: Colors.black),
+                      icon: const Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.black,
+                      ),
                       items:
-                          selectedEducationLevel == 'Primary Education'
-                              ? primaryEducGradeLevel.map<DropdownMenuItem>((
-                                dynamic value,
-                              ) {
-                                return DropdownMenuItem(
-                                  value: value.toString(),
-
-                                  child: Text(
-                                    value.toString(),
-                                    style: GoogleFonts.workSans(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                );
-                              }).toList()
-                              : selectedEducationLevel == 'Secondary Education'
-                              ? secondaryEducGradeLevel.map<DropdownMenuItem>((
-                                dynamic value,
-                              ) {
-                                return DropdownMenuItem(
-                                  value: value.toString(),
-                                  child: Text(
-                                    value.toString(),
-                                    style: GoogleFonts.workSans(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                );
-                              }).toList()
-                              : selectedEducationLevel == 'Tertiary Education'
-                              ? tertiaryEducGradeLevel.map<DropdownMenuItem>((
-                                dynamic value,
-                              ) {
-                                return DropdownMenuItem(
-                                  value: value.toString(),
-                                  child: Text(
-                                    value.toString(),
-                                    style: GoogleFonts.workSans(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                );
-                              }).toList()
-                              : null,
-
+                          educationLevels.map<DropdownMenuItem>((dynamic value) {
+                            return DropdownMenuItem(
+                              value: value.toString(),
+                              child: Text(
+                                value.toString(),
+                                style: GoogleFonts.workSans(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            );
+                          }).toList(),
                       onChanged: (newValue) {
                         setState(() {
-                          selectedGrade = newValue;
+                          selectedEducationLevel = newValue;
+                          selectedGrade = null;
                         });
                       },
                     ),
                   ),
                 ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: InkWell(
-                    onTap: next,
+                SizedBox(height: 20),
+                if (selectedEducationLevel != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
                     child: Container(
-                      padding: EdgeInsets.all(15),
-                      width: MediaQuery.sizeOf(context).width * 0.9,
                       decoration: BoxDecoration(
-                        color: green,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20),
-                        ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(50),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(50),
+                            spreadRadius: 0,
+                            blurRadius: 3,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
                       ),
-                      child: Text(
-                        "Next",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                      child: DropdownButtonFormField(
+                        value: selectedGrade,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        hint: Text(
+                          "Select your Education Level",
+                          style: GoogleFonts.workSans(
+                            color: Colors.grey[500],
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(
+                              50,
+                            ), // Rounded corners
+                          ),
+                        ),
+                        dropdownColor: Colors.white,
+                        icon: Icon(Icons.arrow_drop_down, color: Colors.black),
+                        items:
+                            selectedEducationLevel == 'Primary Education'
+                                ? primaryEducGradeLevel.map<DropdownMenuItem>((
+                                  dynamic value,
+                                ) {
+                                  return DropdownMenuItem(
+                                    value: value.toString(),
+            
+                                    child: Text(
+                                      value.toString(),
+                                      style: GoogleFonts.workSans(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  );
+                                }).toList()
+                                : selectedEducationLevel == 'Secondary Education'
+                                ? secondaryEducGradeLevel.map<DropdownMenuItem>((
+                                  dynamic value,
+                                ) {
+                                  return DropdownMenuItem(
+                                    value: value.toString(),
+                                    child: Text(
+                                      value.toString(),
+                                      style: GoogleFonts.workSans(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  );
+                                }).toList()
+                                : selectedEducationLevel == 'Tertiary Education'
+                                ? tertiaryEducGradeLevel.map<DropdownMenuItem>((
+                                  dynamic value,
+                                ) {
+                                  return DropdownMenuItem(
+                                    value: value.toString(),
+                                    child: Text(
+                                      value.toString(),
+                                      style: GoogleFonts.workSans(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  );
+                                }).toList()
+                                : null,
+            
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedGrade = newValue;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: InkWell(
+                      onTap: next,
+                      child: Container(
+                        padding: EdgeInsets.all(15),
+                        width: MediaQuery.sizeOf(context).width * 0.9,
+                        decoration: BoxDecoration(
+                          color: green,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: Text(
+                          "Next",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

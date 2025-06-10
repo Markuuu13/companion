@@ -30,7 +30,7 @@ class _EmailSignupState extends State<EmailSignup> {
   AuthService authService = AuthService();
   bool isChecked = false;
   bool isObscure = true;
-
+  bool isToastVisible = false;
   String password = '';
 
   void verifyUserEmail(
@@ -42,12 +42,24 @@ class _EmailSignupState extends State<EmailSignup> {
   ) async {
     if (passwordController.text.trim() !=
         confirmPasswordController.text.trim()) {
-      showErrorToast(context, "Passwords doesn't match");
+      if (!isToastVisible) {
+        isToastVisible = true;
+        showErrorToast(context, "Password doesn't match!");
+        Future.delayed(Duration(seconds: 2), () {
+          isToastVisible = false;
+        });
+      }
       return;
     }
     if (passwordController.text.trim().isEmpty ||
         confirmPasswordController.text.trim().isEmpty) {
-      showErrorToast(context, "Password required");
+      if (!isToastVisible) {
+        isToastVisible = true;
+        showErrorToast(context, "Password is required.");
+        Future.delayed(Duration(seconds: 2), () {
+          isToastVisible = false;
+        });
+      }
       return;
     }
 
@@ -57,10 +69,16 @@ class _EmailSignupState extends State<EmailSignup> {
         emailController.text.trim(),
       );
       if (isExistingUser) {
-        showErrorToast(
-          context,
-          "This email is already registered. Please try another email",
-        );
+        if (!isToastVisible) {
+          isToastVisible = true;
+          showErrorToast(
+            context,
+            "This email is already registered. Please try another email.",
+          );
+          Future.delayed(Duration(seconds: 2), () {
+            isToastVisible = false;
+          });
+        }
         return;
       }
       bool sendEmail = await authService.sendOTP(
@@ -111,141 +129,138 @@ class _EmailSignupState extends State<EmailSignup> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IconButton(
-                onPressed: () => Get.back(),
-                icon: Icon(Icons.arrow_back, color: Colors.black),
-              ),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Your Email Address",
-                      style: GoogleFonts.workSans(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: mainColor,
-                      ),
-                    ),
-                    Text(
-                      "Starts on giving your some information",
-                      style: GoogleFonts.workSans(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconButton(
+                  onPressed: () => Get.back(),
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
                 ),
-              ),
-              SizedBox(height: 40),
-              TextfieldRegister(
-                labeltext: 'Email Address',
-                controller: emailController,
-              ),
-              SizedBox(height: 20),
-              TextfieldRegister(
-                obscureText: isObscure,
-                labeltext: 'Password',
-                controller: passwordController,
-              ),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  children: [
-                    buildPasswordRequirement(
-                      text: 'Password must contain at least 8 characters.',
-                      condition: password.length >= 8,
-                    ),
-                    buildPasswordRequirement(
-                      text: "Should contain special characters !@_^&#* only.",
-                      condition: RegExp(r'[!@_^&#*]').hasMatch(password),
-                    ),
-
-                    buildPasswordRequirement(
-                      text: "Should contain at least one uppercase letter.",
-                      condition: RegExp(r'[A-Z]').hasMatch(password),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              TextfieldRegister(
-                obscureText: isObscure,
-                labeltext: 'Confirm Password',
-                controller: confirmPasswordController,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Checkbox(
-                      side: BorderSide.none,
-                      fillColor: WidgetStateProperty.all(Colors.black26),
-                      checkColor: Colors.white,
-                      value: isChecked,
-                      onChanged: (bool? newValue) {
-                        setState(() {
-                          isChecked = newValue!;
-                          isObscure = !newValue;
-                        });
-                      },
-                    ),
-                    Text(
-                      "Show Password",
-                      style: GoogleFonts.workSans(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: InkWell(
-                    onTap:
-                        () => verifyUserEmail(
-                          emailController.text.trim(),
-                          widget.username,
-                          widget.educationLevel,
-                          widget.selectedGrade,
-                          passwordController.text.trim(),
-                        ),
-                    child: Container(
-                      padding: EdgeInsets.all(15),
-                      width: MediaQuery.sizeOf(context).width * 0.9,
-                      decoration: BoxDecoration(
-                        color: green,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20),
-                        ),
-                      ),
-                      child: Text(
-                        "Next",
-                        style: TextStyle(
-                          color: Colors.white,
+                SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Your Email Address",
+                        style: GoogleFonts.workSans(
+                          fontSize: 25,
                           fontWeight: FontWeight.bold,
+                          color: mainColor,
+                        ),
+                      ),
+                      Text(
+                        "Starts on giving your some information",
+                        style: GoogleFonts.workSans(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 40),
+                TextfieldRegister(
+                  labeltext: 'Email Address',
+                  controller: emailController,
+                ),
+                SizedBox(height: 20),
+                TextfieldRegister(
+                  obscureText: isObscure,
+                  labeltext: 'Password',
+                  controller: passwordController,
+                ),
+                SizedBox(height: 20),
+
+                buildPasswordRequirement(
+                  text: 'Password must contain at least 8 characters.',
+                  condition: password.length >= 8,
+                ),
+                buildPasswordRequirement(
+                  text: "Should contain special characters !@_^&#* only.",
+                  condition: RegExp(r'[!@_^&#*]').hasMatch(password),
+                ),
+
+                buildPasswordRequirement(
+                  text: "Should contain at least one uppercase letter.",
+                  condition: RegExp(r'[A-Z]').hasMatch(password),
+                ),
+
+                SizedBox(height: 20),
+                TextfieldRegister(
+                  obscureText: isObscure,
+                  labeltext: 'Confirm Password',
+                  controller: confirmPasswordController,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Checkbox(
+                        side: BorderSide.none,
+                        fillColor: WidgetStateProperty.all(Colors.black26),
+                        checkColor: Colors.white,
+                        value: isChecked,
+                        onChanged: (bool? newValue) {
+                          setState(() {
+                            isChecked = newValue!;
+                            isObscure = !newValue;
+                          });
+                        },
+                      ),
+                      Text(
+                        "Show Password",
+                        style: GoogleFonts.workSans(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500,
                           fontSize: 15,
                         ),
-                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: InkWell(
+                      onTap:
+                          () => verifyUserEmail(
+                            emailController.text.trim(),
+                            widget.username,
+                            widget.educationLevel,
+                            widget.selectedGrade,
+                            passwordController.text.trim(),
+                          ),
+                      child: Container(
+                        padding: EdgeInsets.all(15),
+                        width: MediaQuery.sizeOf(context).width * 0.9,
+                        decoration: BoxDecoration(
+                          color: green,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: Text(
+                          "Next",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -256,25 +271,31 @@ class _EmailSignupState extends State<EmailSignup> {
     required String text,
     required bool condition,
   }) {
-    return Row(
-      children: [
-        Icon(
-          condition ? Icons.check_circle_rounded : Icons.cancel_outlined,
-          color: condition ? green : red,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: Text(
-            text,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.workSans(
-              color: condition ? green : red,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Icon(
+            condition ? Icons.check_circle_rounded : Icons.cancel_outlined,
+            color: condition ? green : red,
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                text,
+                overflow: TextOverflow.clip,
+                softWrap: true,
+                style: GoogleFonts.workSans(
+                  color: condition ? green : red,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

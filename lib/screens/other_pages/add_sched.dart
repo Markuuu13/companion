@@ -128,6 +128,11 @@ class _AddScheduleState extends State<AddSchedule> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () => Get.back(),
+                    child: Icon(Icons.arrow_back, color: Colors.black),
+                  ),
+                  SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -139,10 +144,6 @@ class _AddScheduleState extends State<AddSchedule> {
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () => Get.back(),
-                        icon: Icon(Icons.cancel, color: Colors.red),
                       ),
                     ],
                   ),

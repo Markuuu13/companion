@@ -8,12 +8,13 @@ import 'package:http/http.dart' as http;
 
 import '../constants.dart';
 import '../models/user_model.dart';
+import '../screens/authentication/successful.dart';
 
 class AuthService {
   final box = GetStorage();
   Map<String, dynamic>? userDetails;
   int? userId;
-
+  bool isToastVisible = false;
   void signUp({
     required BuildContext context,
     required String email,
@@ -43,12 +44,26 @@ class AuthService {
       );
 
       if (response.statusCode == 200) {
-        showSuccessToast(context, jsonDecode(response.body)['message']);
-        Get.offAll(() => LoginPage());
+        Get.offAll(() => SuccessfullyVerified());
+        return;
       } else if (response.statusCode == 500) {
-        showErrorToast(context, jsonDecode(response.body)['message']);
+        if (!isToastVisible) {
+          isToastVisible = true;
+          showErrorToast(context, jsonDecode(response.body)['message']);
+          Future.delayed(Duration(seconds: 2), () {
+            isToastVisible = false;
+          });
+        }
+        return;
       } else {
-        showErrorToast(context, jsonDecode(response.body)['message']);
+        if (!isToastVisible) {
+          isToastVisible = true;
+          showErrorToast(context, jsonDecode(response.body)['message']);
+          Future.delayed(Duration(seconds: 2), () {
+            isToastVisible = false;
+          });
+        }
+        return;
       }
     } catch (e) {
       print(e);
@@ -69,11 +84,9 @@ class AuthService {
 
       switch (response.statusCode) {
         case 409: // Email already exists
-          showErrorToast(context, jsonDecode(response.body)['message']);
           return true;
 
         case 400: // Error occurred
-          showErrorToast(context, jsonDecode(response.body)['message']);
           return false;
 
         case 200: // Email is available
@@ -141,7 +154,7 @@ class AuthService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         userId = data['data']['user_id'];
-        
+
         // final userdata = UserService().fetchUserDetails(userId);
         box.write('userid', userId);
         print(userId);

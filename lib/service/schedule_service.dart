@@ -56,22 +56,45 @@ class ScheduleService {
         },
       );
 
-      if(response.statusCode == 200) {
+      if (response.statusCode == 200) {
         print("Schedules today fetched: ${response.body}");
-        final schedulesToday = jsonDecode(response.body); 
+        final schedulesToday = jsonDecode(response.body);
         // return schedulesToday;
         if (schedulesToday is List) {
-        return schedulesToday;
-      } else if (schedulesToday is Map && schedulesToday['data'] is List) {
-        return schedulesToday['data'];
+          return schedulesToday;
+        } else if (schedulesToday is Map && schedulesToday['data'] is List) {
+          return schedulesToday['data'];
+        } else {
+          print("Unexpected format: $schedulesToday");
+          return [];
+        }
       } else {
-        print("Unexpected format: $schedulesToday");
-        return [];
-      }
-      }
-      else {
         print("Failed to fetch schedules for today");
         return [];
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> updateScheduleStatus({
+    required BuildContext context,
+    required int scheduleId,
+    required int status,
+  }) async {
+    try {
+      final response = await http.put(
+        Uri.parse("$backendUrl/updateScheduleStatus"),
+        body: jsonEncode({'schedule_id': scheduleId, 'status_id': status}),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      final result = jsonDecode(response.body);
+      print(result);
+      if (response.statusCode == 200) {
+        showSuccessToast(context, "You started to do this task! Goodluck");
+      } else {
+        showErrorToast(context, "${result['message']}");
       }
     } catch (e) {
       print(e.toString());

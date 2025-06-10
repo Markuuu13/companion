@@ -1,5 +1,5 @@
 import 'package:companion/screens/authentication/verifyemail.dart';
-import 'package:companion/splash_screen.dart';
+import 'package:companion/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: SuccessfullyVerified(),
+      home: SplashScreen(),
       // home: userId != null ? Navigation() : LoginPage(),
     );
   }

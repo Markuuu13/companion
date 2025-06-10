@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../components/schedule_status.dart';
+import '../../service/schedule_service.dart';
 import '../other_pages/edit_profile.dart';
 
 class Profile extends StatefulWidget {
@@ -17,12 +18,17 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final UserService userService = UserService();
+  final ScheduleService scheduleService = ScheduleService();
+
   Map<String, dynamic>? userProfile;
+  List<dynamic>? scheduleToday;
+
   final box = GetStorage();
   @override
   void initState() {
     super.initState();
     _loadUserProfile();
+    getScheduleToday();
   }
 
   Future<void> _loadUserProfile() async {
@@ -38,8 +44,33 @@ class _ProfileState extends State<Profile> {
     }
   }
 
+  Future<void> getScheduleToday() async {
+    final userId = box.read('userid');
+    try {
+      final result = await scheduleService.scheduleToday(context, userId);
+      setState(() {
+        scheduleToday = result;
+      });
+      
+    } catch (e) {
+      print("Error fetching today's schedule: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final today = DateTime.now();
+    final todayFormatted =
+        "${today.year.toString().padLeft(4, '0')}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+    final todayTasks =
+        scheduleToday?.where((sched) {
+          return sched['dateScheduled'] == todayFormatted;
+        }).toList() ??
+        [];
+    final pendingCount =
+        todayTasks.where((sched) => sched['status_id'] == 2).length;
+    final completedCount =
+        todayTasks.where((sched) => sched['status_id'] == 3).length;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -74,17 +105,18 @@ class _ProfileState extends State<Profile> {
                             children: [
                               StatusContainer(
                                 color: notStarted,
-                                text: "Today's Task: 0",
+                                text: "Today's Task: ${todayTasks.length}",
                               ),
+
                               SizedBox(height: 15),
                               StatusContainer(
                                 color: orange,
-                                text: "Pending: 0",
+                                text: "Pending: $pendingCount",
                               ),
                               SizedBox(height: 15),
                               StatusContainer(
                                 color: completeColor,
-                                text: "Completed: 0",
+                                text: "Completed: $completedCount",
                               ),
                             ],
                           ),
@@ -93,8 +125,7 @@ class _ProfileState extends State<Profile> {
                       SizedBox(height: 30),
                       buildUserDetails(
                         title: "Username",
-                        userDetails:
-                            "${userProfile!['username']}",
+                        userDetails: "${userProfile!['username']}",
                       ),
                       SizedBox(height: 30),
                       buildUserDetails(

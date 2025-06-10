@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../components/no_schedule.dart';
 import '../../service/schedule_service.dart';
@@ -62,24 +63,32 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         actions: [
-          IconButton(
+          userProfile != null ? IconButton(
             onPressed: () {
               Get.to(() => AddSchedule())?.then((_) {
                 getScheduleToday();
               });
             },
             icon: Icon(Icons.add, color: completeColor, size: 35),
-          ),
+          ) : Text(""),
           SizedBox(width: 5),
         ],
       ),
       body: SafeArea(
         child:
             userProfile == null
-                ? Center(child: CircularProgressIndicator())
+                ? Center(
+                  child: Lottie.asset(
+                    'assets/animations/loading.json',
+                    repeat: true,
+                    width: 150,
+                    height: 150,
+                  ),
+                )
                 : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -136,24 +145,68 @@ class _HomeState extends State<Home> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Today's Plan",
-                                style: GoogleFonts.workSans(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Today's Plan",
+                                    style: GoogleFonts.workSans(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  if (scheduleToday != null)
+                                    Row(
+                                      children: [
+                                        Icon(Icons.check, color: green),
+                                        Text(
+                                          "0",
+                                          style: GoogleFonts.workSans(
+                                            color: Colors.black,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(width: 20),
+                                        Icon(Icons.close, color: red),
+                                        Text(
+                                          scheduleToday == null
+                                              ? ""
+                                              : scheduleToday!
+                                                  .where(
+                                                    (sched) =>
+                                                        sched['status_id'] == 1,
+                                                  )
+                                                  .isNotEmpty
+                                              ? "${scheduleToday!.where((sched) => sched['status_id'] == 1).length}"
+                                              : "0",
+                                          style: GoogleFonts.workSans(
+                                            color: Colors.black,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
                               ),
 
                               Expanded(
                                 child:
                                     scheduleToday == null
                                         ? Center(
-                                          child: CircularProgressIndicator(),
+                                          child: Lottie.asset(
+                                            'assets/animations/loading.json',
+                                            repeat: true,
+                                            width: 150,
+                                            height: 150,
+                                          ),
                                         )
                                         : scheduleToday!.isEmpty
                                         ? NoSchedule()
                                         : TodaysGridBuilder(
                                           scheduleTodayData: scheduleToday,
+                                          onScheduleUpdated: getScheduleToday,
                                         ),
                               ),
                             ],

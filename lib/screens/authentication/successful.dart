@@ -1,7 +1,8 @@
+import 'package:companion/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-
 import '../../constants.dart';
 
 class SuccessfullyVerified extends StatefulWidget {
@@ -21,7 +22,7 @@ class _MyWidgetState extends State<SuccessfullyVerified> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Lottie.asset(
-                'assets/animations/success_animation.json',
+                'assets/animations/success_animations.json',
                 repeat: true,
                 width: 150,
                 height: 150,
@@ -34,14 +35,17 @@ class _MyWidgetState extends State<SuccessfullyVerified> {
                   color: Colors.black,
                 ),
               ),
-              Text(
-                "Go back to Login",
-                style: GoogleFonts.workSans(
-                  fontSize: 17,
-                  decoration: TextDecoration.underline,
-                  decorationColor: mainColor,
-                  fontWeight: FontWeight.w600,
-                  color: mainColor,
+              GestureDetector(
+                onTap: () => Get.offAll(SplashScreen()),
+                child: Text(
+                  "Go back to Login",
+                  style: GoogleFonts.workSans(
+                    fontSize: 17,
+                    decoration: TextDecoration.underline,
+                    decorationColor: mainColor,
+                    fontWeight: FontWeight.w600,
+                    color: mainColor,
+                  ),
                 ),
               ),
             ],

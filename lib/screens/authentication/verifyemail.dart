@@ -27,7 +27,7 @@ class VerifyEmail extends StatefulWidget {
 
 class _VerifyEmailState extends State<VerifyEmail> {
   final TextEditingController verifyOtp = TextEditingController();
-
+  bool isToastVisible = false;
   AuthService authService = AuthService();
   @override
   void dispose() {
@@ -44,6 +44,17 @@ class _VerifyEmailState extends State<VerifyEmail> {
     String selectedGrade,
     String otp,
   ) async {
+    if (verifyOtp.text.isEmpty) {
+      if (!isToastVisible) {
+        isToastVisible = true;
+        showErrorToast(context, "Please enter the OTP code to proceed.");
+        Future.delayed(Duration(seconds: 2), () {
+          isToastVisible = false;
+        });
+      }
+      return;
+    }
+
     try {
       authService.signUp(
         context: context,
@@ -54,7 +65,6 @@ class _VerifyEmailState extends State<VerifyEmail> {
         selectedGrade: selectedGrade,
         otp: otp,
       );
-      Get.offAll(() => SuccessfullyVerified());
     } catch (e) {
       print(e.toString());
     }
@@ -69,103 +79,105 @@ class _VerifyEmailState extends State<VerifyEmail> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IconButton(
-                onPressed: () => Get.back(),
-                icon: Icon(Icons.arrow_back, color: Colors.black),
-              ),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Verify your Email",
-                      style: GoogleFonts.workSans(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: mainColor,
-                      ),
-                    ),
-                    Text(
-                      "You are almost done!",
-                      style: GoogleFonts.workSans(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black54,
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    Text(
-                      "OTP code sent to:",
-                      overflow: TextOverflow.clip,
-                      style: GoogleFonts.workSans(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      widget.email,
-                      overflow: TextOverflow.clip,
-                      style: GoogleFonts.workSans(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconButton(
+                  onPressed: () => Get.back(),
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
                 ),
-              ),
-              SizedBox(height: 20),
-              TextfieldRegister(
-                labeltext: 'Enter the 6 digit code',
-                controller: verifyOtp,
-              ),
-              SizedBox(height: 10),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: InkWell(
-                    onTap:
-                        () => signUp(
-                          widget.email,
-                          widget.username,
-                          widget.password,
-                          widget.educationLevel,
-                          widget.selectedGrade,
-                          verifyOtp.text.trim(),
-                        ),
-
-                    child: Container(
-                      padding: EdgeInsets.all(15),
-                      width: MediaQuery.sizeOf(context).width * 0.9,
-                      decoration: BoxDecoration(
-                        color: green,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20),
+                SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Verify your Email",
+                        style: GoogleFonts.workSans(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: mainColor,
                         ),
                       ),
-                      child: Text(
-                        "Verify my Email",
+                      Text(
+                        "You are almost done!",
                         style: GoogleFonts.workSans(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      Text(
+                        "OTP code sent to:",
+                        overflow: TextOverflow.clip,
+                        style: GoogleFonts.workSans(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
                           fontSize: 15,
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      Text(
+                        widget.email,
+                        overflow: TextOverflow.clip,
+                        style: GoogleFonts.workSans(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextfieldRegister(
+                  labeltext: 'Enter the 6 digit code',
+                  controller: verifyOtp,
+                ),
+                SizedBox(height: 10),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: InkWell(
+                      onTap:
+                          () => signUp(
+                            widget.email,
+                            widget.username,
+                            widget.password,
+                            widget.educationLevel,
+                            widget.selectedGrade,
+                            verifyOtp.text.trim(),
+                          ),
+
+                      child: Container(
+                        padding: EdgeInsets.all(15),
+                        width: MediaQuery.sizeOf(context).width * 0.9,
+                        decoration: BoxDecoration(
+                          color: green,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: Text(
+                          "Verify my Email",
+                          style: GoogleFonts.workSans(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
