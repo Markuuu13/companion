@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 
@@ -15,7 +16,7 @@ class SplashScreen extends StatelessWidget {
     final userId = box.read('userid');
 
     Future.delayed(Duration(seconds: 5), () {
-      Get.offAll(() => userId != null ? Navigation() : LoginPage());
+      Get.offAll(() => LoginPage());
     });
 
     return Scaffold(

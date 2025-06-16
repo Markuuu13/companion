@@ -16,10 +16,10 @@ class TodayScheduleDetails extends StatefulWidget {
 }
 
 class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
-  final ScheduleService updateScheduleStatus = ScheduleService();
+  final ScheduleService scheduleService = ScheduleService();
 
   void updateSched() async {
-    final id = widget.scheduleDetails?['schedule_id'];
+    final id = widget.scheduleDetails!['schedule_id'];
     print("Attempting to update schedule with ID: $id");
 
     if (id == null) {
@@ -27,7 +27,7 @@ class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
       return;
     }
 
-    await updateScheduleStatus.updateScheduleStatus(
+    await scheduleService.updateScheduleStatus(
       context: context,
       scheduleId: id,
       status: 2,
@@ -58,7 +58,13 @@ class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                await scheduleService.deleteTask(
+                  context,
+                  scheduleId: widget.scheduleDetails!['schedule_id'],
+                );
+                Get.back();
+              },
               icon: Icon(Icons.delete, color: red),
             ),
           ),

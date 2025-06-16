@@ -123,5 +123,27 @@ exports.displaySchedules = async (req, res) => {
     }
 }
 
+exports.deleteTaskSchedule = async (req, res) => {
+    try {
+        const { schedule_id } = req.body;
 
+        const { data, error } = await supabase
+            .from('schedule')
+            .delete()
+            .eq('schedule_id', schedule_id)
+            .single();
 
+        if(!data) {
+            return res.status(404).json({ message: "Schedule not found?"});
+        }
+        if(error) {
+            return res.status(500).json({ message: "Error occured. Please try again."});
+        }
+
+        return res.status(200).json({ message: "Task schedule deleted successfully!"});
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).json({ message: "Internal server error!"});
+        
+    }
+}

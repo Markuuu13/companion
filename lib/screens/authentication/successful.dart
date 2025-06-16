@@ -1,9 +1,10 @@
-import 'package:companion/splash/splash_screen.dart';
+import 'package:companion/splash/splash_screen_logged.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import '../../constants.dart';
+import '../../splash/splash_screen.dart';
 
 class SuccessfullyVerified extends StatefulWidget {
   const SuccessfullyVerified({super.key});

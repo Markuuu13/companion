@@ -100,4 +100,24 @@ class ScheduleService {
       print(e.toString());
     }
   }
+
+  Future<void> deleteTask(BuildContext context, {required int scheduleId}) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$backendUrl/schedule/deleteSchedule'),
+        body: jsonEncode({'schedule_id': scheduleId}),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      final data = jsonDecode(response.body);
+      if(response.statusCode == 200) {
+        showSuccessToast(context, "Task deleted successfully!");
+      }
+      else {
+        showErrorToast(context, "$data['message']");
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 }
