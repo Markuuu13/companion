@@ -17,10 +17,9 @@ class TodayScheduleDetails extends StatefulWidget {
 
 class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
   final ScheduleService scheduleService = ScheduleService();
-
-  void updateSched() async {
+  bool isDoingTask = false;
+  void updateSchedPending(String message) async {
     final id = widget.scheduleDetails!['schedule_id'];
-    print("Attempting to update schedule with ID: $id");
 
     if (id == null) {
       showErrorToast(context, "Invalid schedule ID");
@@ -31,7 +30,32 @@ class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
       context: context,
       scheduleId: id,
       status: 2,
+      message: message,
     );
+
+    setState(() {
+      widget.scheduleDetails!['status_id'] = 2;
+    });
+  }
+
+  void updateSchedCompleted(String message) async {
+    final id = widget.scheduleDetails!['schedule_id'];
+
+    if (id == null) {
+      showErrorToast(context, "Invalid schedule ID");
+      return;
+    }
+
+    await scheduleService.updateScheduleStatus(
+      context: context,
+      scheduleId: id,
+      status: 3,
+      message: message,
+    );
+
+    setState(() {
+      widget.scheduleDetails!['status_id'] = 3;
+    });
   }
 
   String formatDateTime(String date, String time) {
@@ -163,31 +187,38 @@ class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: updateSched,
-                  style: ElevatedButton.styleFrom(backgroundColor: mainColor),
-                  child: Text(
-                    'Do this Task',
-                    style: GoogleFonts.workSans(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                if (widget.scheduleDetails!['status_id'] == 1)
+                  ElevatedButton(
+                    onPressed: () {
+                      updateSchedPending(
+                        "You started to do the task! Stay focused and be mindful of the deadline.",
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(backgroundColor: mainColor),
+                    child: Text(
+                      'Do this Task',
+                      style: GoogleFonts.workSans(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(backgroundColor: green),
-                  child: Text(
-                    'Mark as done',
-                    style: GoogleFonts.workSans(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                if (widget.scheduleDetails!['status_id'] == 2)
+                  ElevatedButton(
+                    onPressed: () {
+                      updateSchedCompleted("Great Job! You completed your task.");
+                    },
+                    style: ElevatedButton.styleFrom(backgroundColor: green),
+                    child: Text(
+                      'Mark as done',
+                      style: GoogleFonts.workSans(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
             SizedBox(height: 50),

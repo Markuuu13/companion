@@ -10,6 +10,7 @@ class AddSchedModelManual {
   final String deadlineTime;
   final String scheduleDate;
   final String scheduleTime;
+  final String tileColor;
 
   AddSchedModelManual({
     required this.userId,
@@ -20,6 +21,7 @@ class AddSchedModelManual {
     required this.deadlineTime,
     required this.scheduleDate,
     required this.scheduleTime,
+    required this.tileColor,
   });
 
   Map<String, dynamic> toMap() {
@@ -32,6 +34,7 @@ class AddSchedModelManual {
       'deadlineTime': deadlineTime,
       'dateScheduled': scheduleDate,
       'dateScheduledTime': scheduleTime,
+      'preferColor': tileColor,
     };
   }
 
@@ -39,12 +42,14 @@ class AddSchedModelManual {
     return AddSchedModelManual(
       userId: map['user_id'] as int,
       title: map['title'] as String,
-      description: map['description'] != null ? map['description'] as String : null,
+      description:
+          map['description'] != null ? map['description'] as String : null,
       subject: map['subject'] as String,
       deadlineDate: map['deadlineDate'] as String,
       deadlineTime: map['deadlineTime'] as String,
       scheduleDate: map['dateScheduled'] as String,
       scheduleTime: map['dateScheduledTime'] as String,
+      tileColor: map['preferColor'] as String,
     );
   }
 

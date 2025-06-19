@@ -8,12 +8,13 @@ class DateGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.all(8),
       physics: AlwaysScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 1,
         mainAxisSpacing: 10,
         crossAxisSpacing: 19,
-        childAspectRatio: 1 / 2,
+        childAspectRatio: 1.1 / 1,
       ),
       itemCount: 10,
       itemBuilder: (context, index) {
@@ -22,7 +23,7 @@ class DateGrid extends StatelessWidget {
           child: Container(
             width: 200,
             height: 300,
-            decoration: BoxDecoration(color: blue),
+            decoration: BoxDecoration(color: mainColor),
           ),
         );
       },

@@ -16,6 +16,7 @@ class ScheduleService {
     required String deadlineTime,
     required String scheduleDate,
     required String scheduleTime,
+    required String tileColor,
   }) async {
     AddSchedModelManual addSchedModelManual = AddSchedModelManual(
       userId: userId,
@@ -26,6 +27,7 @@ class ScheduleService {
       deadlineTime: deadlineTime,
       scheduleDate: scheduleDate,
       scheduleTime: scheduleTime,
+      tileColor: tileColor,
     );
     try {
       final response = await http.post(
@@ -81,6 +83,7 @@ class ScheduleService {
     required BuildContext context,
     required int scheduleId,
     required int status,
+    required String message,
   }) async {
     try {
       final response = await http.put(
@@ -92,7 +95,7 @@ class ScheduleService {
       final result = jsonDecode(response.body);
       print(result);
       if (response.statusCode == 200) {
-        showSuccessToast(context, "You started to do this task! Goodluck");
+        showSuccessToast(context, message);
       } else {
         showErrorToast(context, "${result['message']}");
       }
@@ -101,7 +104,10 @@ class ScheduleService {
     }
   }
 
-  Future<void> deleteTask(BuildContext context, {required int scheduleId}) async {
+  Future<void> deleteTask(
+    BuildContext context, {
+    required int scheduleId,
+  }) async {
     try {
       final response = await http.delete(
         Uri.parse('$backendUrl/schedule/deleteSchedule'),
@@ -110,11 +116,10 @@ class ScheduleService {
       );
 
       final data = jsonDecode(response.body);
-      if(response.statusCode == 200) {
+      if (response.statusCode == 200) {
         showSuccessToast(context, "Task deleted successfully!");
-      }
-      else {
-        showErrorToast(context, "$data['message']");
+      } else {
+        return;
       }
     } catch (e) {
       print(e.toString());

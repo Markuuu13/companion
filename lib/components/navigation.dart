@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controller/navigation_controller.dart';
+import '../controller/schedule_controller.dart';
 import '../screens/navigation/aiassistant.dart';
 import '../screens/navigation/home.dart';
 import '../screens/navigation/profile.dart';
@@ -23,6 +24,7 @@ class _NavigationState extends State<Navigation> {
   final NavigationController navigationController = Get.put(
     NavigationController(),
   );
+  final ScheduleController scheduleController = Get.put(ScheduleController());
 
   // Fetching user details
   final AuthService authService = AuthService();
@@ -48,25 +50,10 @@ class _NavigationState extends State<Navigation> {
     }
   }
 
-  Future<void> getScheduleToday() async {
-    final userId = box.read('userid');
-
-    try {
-      final schedules = await scheduleService.scheduleToday(context, userId);
-      setState(() {
-        scheduleToday = schedules;
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _loadUserProfile();
-    getScheduleToday();
   }
 
   @override
@@ -130,20 +117,43 @@ class _NavigationState extends State<Navigation> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                      Text(
-                        scheduleToday == null
-                            ? "Loading tasks..."
-                            : scheduleToday!
+
+                      Obx(() {
+                        final pendingTasks =
+                            scheduleController.scheduleToday
                                 .where((sched) => sched['status_id'] == 2)
-                                .isEmpty
-                            ? "No pending tasks"
-                            : "${scheduleToday!.where((sched) => sched['status_id'] == 2).length} pending task(s)",
-                        style: GoogleFonts.workSans(
-                          color: Colors.deepOrange,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      ),
+                                .toList();
+                        final notStartedTasks =
+                            scheduleController.scheduleToday
+                                .where((sched) => sched['status_id'] == 1)
+                                .toList();
+
+                        String message;
+                        if (scheduleController.scheduleToday.isEmpty) {
+                          message = "No tasks today";
+                        } else if (pendingTasks.isNotEmpty) {
+                          message =
+                              pendingTasks.length == 1
+                                  ? "1 Pending Task"
+                                  : "${pendingTasks.length} Pending Tasks";
+                        } else if (notStartedTasks.isNotEmpty) {
+                          message =
+                              notStartedTasks.length == 1
+                                  ? "1 Not Started Task"
+                                  : "${notStartedTasks.length} Not Started Tasks";
+                        } else {
+                          message = "All tasks completed";
+                        }
+
+                        return Text(
+                          message,
+                          style: GoogleFonts.workSans(
+                            color: Colors.deepOrange,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        );
+                      }),
                     ],
                   ),
                 ],

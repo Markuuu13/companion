@@ -59,7 +59,19 @@ class _LoginPageState extends State<LoginPage> {
       if (successLogin) {
         Get.offAll(() => Navigation());
       } else {
-        showErrorToast(context, "Invalid email or password. Please try again.");
+        if (!isToastVisible) {
+          isToastVisible = true;
+
+          showErrorToast(
+            context,
+            "Invalid email or password. Please try again.",
+          );
+
+          Future.delayed(Duration(seconds: 2), () {
+            isToastVisible = false;
+          });
+        }
+        return;
       }
       // Get.to(
       //   () => EmailSignup(

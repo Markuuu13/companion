@@ -29,6 +29,7 @@ class _AddScheduleState extends State<AddSchedule> {
   final showtooltip = SuperTooltipController();
   final box = GetStorage();
   String? selectedPriorityLevel;
+  Color? selectedTileColor;
 
   Future<void> _onAddSchedule() async {
     var userId = box.read('userid');
@@ -40,7 +41,10 @@ class _AddScheduleState extends State<AddSchedule> {
       Get.snackbar("Error", "User not logged in. Please login to proceed.");
       return;
     }
-
+    final hexColor =
+        selectedTileColor != null
+            ? '#${selectedTileColor!.value.toRadixString(16).padLeft(8, '0').toUpperCase()}'
+            : '';
     if (titleController.text.isEmpty &&
         subjController.text.isEmpty &&
         deadlineDateController.text.isEmpty &&
@@ -48,6 +52,10 @@ class _AddScheduleState extends State<AddSchedule> {
         scheduleDateController.text.isEmpty &&
         scheduleTimeController.text.isEmpty) {
       showErrorToast(context, "Please fill in all fields.");
+      return;
+    }
+    if (selectedTileColor == null) {
+      showErrorToast(context, "Please select a tile color.");
       return;
     }
     try {
@@ -61,6 +69,7 @@ class _AddScheduleState extends State<AddSchedule> {
         deadlineTime: deadlineTimeController.text.trim(),
         scheduleDate: scheduleDateController.text.trim(),
         scheduleTime: scheduleTimeController.text.trim(),
+        tileColor: hexColor,
       );
 
       // Clear the selected priority level
@@ -73,6 +82,7 @@ class _AddScheduleState extends State<AddSchedule> {
         scheduleDateController.clear();
         scheduleTimeController.clear();
         selectedPriorityLevel = null;
+        selectedTileColor = null;
       });
 
       showSuccessToast(context, "Schedule added successfully!");
@@ -108,7 +118,6 @@ class _AddScheduleState extends State<AddSchedule> {
         selectedPriorityLevel != null;
     final bool isManualSchedAvail =
         titleController.text.isNotEmpty &&
-        descController.text.isNotEmpty &&
         subjController.text.isNotEmpty &&
         deadlineDateController.text.isNotEmpty &&
         deadlineTimeController.text.isNotEmpty &&
@@ -434,7 +443,23 @@ class _AddScheduleState extends State<AddSchedule> {
                         ),
                       ],
                     ),
-
+                  SizedBox(height: 20),
+                  Text(
+                    "Color of schedule tile",
+                    style: GoogleFonts.workSans(
+                      color: mainColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      buildColorTile(color: mainColor),
+                      buildColorTile(color: blue),
+                      buildColorTile(color: red),
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 30),
                     child: Row(
@@ -589,5 +614,37 @@ class _AddScheduleState extends State<AddSchedule> {
         scheduleTimeController.text = formattedTime;
       });
     }
+  }
+
+  Widget buildColorTile({required Color color}) {
+    final bool isSelected = selectedTileColor == color;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedTileColor = color;
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Container(
+          height: 30,
+          width: 30,
+          decoration: BoxDecoration(
+            color: color,
+            border: Border.all(
+              color: isSelected ? Colors.green : Colors.transparent,
+              width: 3,
+            ),
+          ),
+          child:
+              isSelected
+                  ? Center(
+                    child: Icon(Icons.check, color: Colors.white, size: 25),
+                  )
+                  : null,
+        ),
+      ),
+    );
   }
 }

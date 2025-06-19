@@ -20,15 +20,6 @@ class TodaysGridBuilder extends StatefulWidget {
 }
 
 class _TodaysGridBuilderState extends State<TodaysGridBuilder> {
-  List sample = [
-    {"color": red, "title": "Activity", "status": completeColor},
-    {"color": orange, "title": "Assignment", "status": notStarted},
-    {"color": blue, "title": "Assignment", "status": notStarted},
-    {"color": green, "title": "Assignment", "status": completeColor},
-    {"color": red, "title": "Assignment", "status": completeColor},
-    {"color": red, "title": "Assignment", "status": completeColor},
-  ];
-
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -48,17 +39,28 @@ class _TodaysGridBuilderState extends State<TodaysGridBuilder> {
           title: data['title'],
           status:
               data['status_id'] == 1
-                  ? red
+                  ? data['preferColor'] == "#FFC64242"
+                      ? const Color(0xFFF39595)
+                      : red
                   : data['status_id'] == 2
                   ? orange
                   : data['status_id'] == 3
                   ? green
                   : Colors.grey,
-          preferColor: blue,
+          preferColor: parseColor(data['preferColor']),
           timeScheduled: parseTime(data['dateScheduledTime']),
+          onScheduleUpdated: widget.onScheduleUpdated,
         );
       },
     );
+  }
+
+  Color parseColor(String colorString) {
+    colorString = colorString.replaceAll('#', '');
+    if (colorString.length == 6) {
+      colorString = 'FF$colorString'; // add alpha if missing
+    }
+    return Color(int.parse(colorString, radix: 16));
   }
 }
 
@@ -74,11 +76,16 @@ Widget buildPlanTile({
   required Color status,
   required TimeOfDay timeScheduled,
   required Map<String, dynamic> data,
+  required VoidCallback? onScheduleUpdated,
 }) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10),
+    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
     child: InkWell(
-      onTap: () => Get.to(() => TodayScheduleDetails(scheduleDetails: data)),
+      onTap: () {
+        Get.to(() => TodayScheduleDetails(scheduleDetails: data))?.then((_) {
+          onScheduleUpdated!();
+        });
+      },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(

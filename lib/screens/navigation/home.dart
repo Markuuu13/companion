@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../components/no_schedule.dart';
+import '../../controller/schedule_controller.dart';
 import '../../lists/date_grid.dart';
 import '../../service/schedule_service.dart';
 import '../../service/user_service.dart';
@@ -24,6 +25,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final UserService userService = UserService();
   final ScheduleService scheduleService = ScheduleService();
+  final ScheduleController scheduleController = Get.put(ScheduleController());
 
   Map<String, dynamic>? userProfile;
   List<dynamic>? scheduleToday;
@@ -85,7 +87,7 @@ class _HomeState extends State<Home> {
               ? IconButton(
                 onPressed: () {
                   Get.to(() => AddSchedule())?.then((_) {
-                    getScheduleToday();
+                    scheduleController.fetchTodaySchedule();
                   });
                 },
                 icon: Icon(Icons.add, color: completeColor, size: 35),
@@ -151,21 +153,23 @@ class _HomeState extends State<Home> {
                           ),
                         ],
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 25,
-                          right: 25,
-                          top: 30,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: SizedBox(
                               height: 100,
                               width: double.infinity,
                               child: DateGrid(),
                             ),
-                            Row(
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 10,
+                            ),
+                            child: Row(
                               children: [
                                 Text(
                                   "Today's Plan",
@@ -175,30 +179,30 @@ class _HomeState extends State<Home> {
                                   ),
                                 ),
                                 Spacer(),
-                                if (scheduleToday != null)
-                                  Row(
-                                    children: [
-                                      Icon(Icons.check, color: green),
-                                      Text(
-                                        "0",
-                                        style: GoogleFonts.workSans(
-                                          color: Colors.black,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.check, color: green),
+                                    Text(
+                                      "0",
+                                      style: GoogleFonts.workSans(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      SizedBox(width: 20),
-                                      Icon(Icons.close, color: red),
-                                      Text(
-                                        scheduleToday == null
-                                            ? ""
-                                            : scheduleToday!
+                                    ),
+                                    SizedBox(width: 20),
+                                    Icon(Icons.close, color: red),
+                                    Obx(
+                                      () => Text(
+                                        scheduleController.scheduleToday.isEmpty
+                                            ? "0"
+                                            : scheduleController.scheduleToday
                                                 .where(
                                                   (sched) =>
                                                       sched['status_id'] == 1,
                                                 )
                                                 .isNotEmpty
-                                            ? "${scheduleToday!.where((sched) => sched['status_id'] == 1).length}"
+                                            ? "${scheduleController.scheduleToday.where((sched) => sched['status_id'] == 1).length}"
                                             : "0",
                                         style: GoogleFonts.workSans(
                                           color: Colors.black,
@@ -206,31 +210,39 @@ class _HomeState extends State<Home> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
+                          ),
 
-                            Expanded(
-                              child:
-                                  scheduleToday == null
-                                      ? Center(
-                                        child: Lottie.asset(
-                                          'assets/animations/loading.json',
-                                          repeat: true,
-                                          width: 150,
-                                          height: 150,
-                                        ),
-                                      )
-                                      : scheduleToday!.isEmpty
-                                      ? NoSchedule()
-                                      : TodaysGridBuilder(
-                                        scheduleTodayData: scheduleToday,
-                                        onScheduleUpdated: getScheduleToday,
-                                      ),
-                            ),
-                          ],
-                        ),
+                          Expanded(
+                            child: Obx(() {
+                              if (scheduleController.isLoading.value) {
+                                return Center(
+                                  child: Lottie.asset(
+                                    'assets/animations/loading.json',
+                                    repeat: true,
+                                    width: 150,
+                                    height: 150,
+                                  ),
+                                );
+                              }
+
+                              if (scheduleController.scheduleToday.isEmpty) {
+                                return NoSchedule();
+                              }
+
+                              return TodaysGridBuilder(
+                                scheduleTodayData:
+                                    scheduleController.scheduleToday,
+                                onScheduleUpdated:
+                                    scheduleController.fetchTodaySchedule,
+                              );
+                            }),
+                          ),
+                        ],
                       ),
                     ),
                   ),
