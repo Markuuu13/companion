@@ -1,23 +1,75 @@
 import 'package:companion/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
-class AiSuggestion extends StatelessWidget {
-  // final String title;
-  // final String description;
-  // final String subject;
+import '../../service/ai_service.dart';
+
+class AiSuggestion extends StatefulWidget {
+  final String title;
+  final String? description;
+  final String subject;
+  final String deadlineDate;
+  final String deadlineTime;
+  final String priorityLevel;
+  final String selectedTileColor;
   const AiSuggestion({
     super.key,
-    // required this.title,
-    // required this.description,
-    // required this.subject,
+    required this.title,
+    this.description,
+    required this.subject,
+    required this.deadlineDate,
+    required this.deadlineTime,
+    required this.priorityLevel,
+    required this.selectedTileColor,
   });
+
+  @override
+  State<AiSuggestion> createState() => _AiSuggestionState();
+}
+
+class _AiSuggestionState extends State<AiSuggestion> {
+  final AIService aiService = AIService();
+  final box = GetStorage();
+
+  Map<String, dynamic>? suggestedSchedule;
+
+  void getSuggestedSchedule() async {
+    final userId = box.read('userid');
+
+    final response = await aiService.getSuggestedSchedule(
+      userId: userId, // Replace with actual user ID
+      title: widget.title,
+      description: widget.description,
+      subject: widget.subject,
+      deadlineDate: widget.deadlineDate,
+      deadlineTime: widget.deadlineTime,
+      priorityLevel: widget.priorityLevel,
+    );
+
+    setState(() {
+      suggestedSchedule = response;
+    });
+    if (response != null) {
+      print('Suggested Schedule: $response');
+    } else {
+      print('Failed to get suggested schedule');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getSuggestedSchedule();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +85,7 @@ class AiSuggestion extends StatelessWidget {
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    "Try to break down the research into smaller, manageable chunks.  Focus on one or two emerging technologies per day to avoid feeling overwhelmed!",
+                    suggestedSchedule!['message'],
                     overflow: TextOverflow.clip,
                     style: GoogleFonts.workSans(
                       color: Colors.black45,
@@ -48,15 +100,15 @@ class AiSuggestion extends StatelessWidget {
             buildDeadlineOrScheduled(
               colorOfTitle: red,
               titleOfSection: "Your Task's Deadline",
-              date: '03-14-25',
-              time: '11:59 PM',
+              date: widget.deadlineDate,
+              time: widget.deadlineTime,
             ),
             SizedBox(height: 40),
             buildDeadlineOrScheduled(
               colorOfTitle: green,
               titleOfSection: "Suggested Schedule to do the Task",
-              date: '03-13-25',
-              time: '10:00 AM',
+              date: formatDate(suggestedSchedule?['dateScheduled']),
+              time: formatTime(suggestedSchedule?['dateScheduledTime']),
             ),
             SizedBox(height: 50),
             Row(
@@ -75,34 +127,76 @@ class AiSuggestion extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10),
-            Text(
-              "Title: Assignment #1",
-              overflow: TextOverflow.clip,
-              style: GoogleFonts.workSans(
-                color: Colors.black87,
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              children: [
+                Text(
+                  "Title:",
+                  overflow: TextOverflow.clip,
+                  style: GoogleFonts.workSans(
+                    color: Colors.black87,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 10),
+                Text(
+                  widget.title,
+                  overflow: TextOverflow.clip,
+                  style: GoogleFonts.workSans(
+                    color: Colors.black87,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 10),
-            Text(
-              "Description: This is my assignment",
-              overflow: TextOverflow.clip,
-              style: GoogleFonts.workSans(
-                color: Colors.black87,
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              children: [
+                Text(
+                  "Description:",
+                  overflow: TextOverflow.clip,
+                  style: GoogleFonts.workSans(
+                    color: Colors.black87,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 10),
+                Text(
+                  widget.description ?? "No description",
+                  overflow: TextOverflow.clip,
+                  style: GoogleFonts.workSans(
+                    color: Colors.black87,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 10),
-            Text(
-              "Subject/Course: ADET",
-              overflow: TextOverflow.clip,
-              style: GoogleFonts.workSans(
-                color: Colors.black87,
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              children: [
+                Text(
+                  "Subject/Course:",
+                  overflow: TextOverflow.clip,
+                  style: GoogleFonts.workSans(
+                    color: Colors.black87,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 10),
+                Text(
+                  widget.subject,
+                  overflow: TextOverflow.clip,
+                  style: GoogleFonts.workSans(
+                    color: Colors.black87,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
             Spacer(),
             Center(
@@ -183,5 +277,29 @@ class AiSuggestion extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String formatDate(String? dateString) {
+    if (dateString == null) return 'Invalid date';
+    try {
+      final parsed = DateTime.parse(dateString); // Handles YYYY-MM-DD
+      return DateFormat('MM-dd-yy').format(parsed); // e.g. 06-20-25
+    } catch (e) {
+      return 'Invalid date';
+    }
+  }
+
+  String formatTime(String? timeString) {
+    if (timeString == null) return 'Invalid time';
+    try {
+      final parsedTime = DateFormat(
+        'HH:mm:ss',
+      ).parse(timeString); // 24-hour input
+      return DateFormat(
+        'h:mma',
+      ).format(parsedTime).toLowerCase(); // e.g. 5:00pm
+    } catch (e) {
+      return 'Invalid time';
+    }
   }
 }

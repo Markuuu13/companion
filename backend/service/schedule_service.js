@@ -192,7 +192,7 @@ exports.deleteTaskSchedule = async (req, res) => {
 // GEMINI
 exports.autoSchedule = async (req, res) => {
     try {
-        const { user_id, title, description, deadlineDate, deadlineTime, priorityLevel } = req.body;
+        const { user_id, title, description, subject, deadlineDate, deadlineTime, priorityLevel } = req.body;
 
         const { data: userDetails, error: userError } = await supabase
             .from('users')
@@ -224,6 +224,7 @@ exports.autoSchedule = async (req, res) => {
         Can you create a schedule for this task?
         Task Title: ${title}
         The task is all about or the description of the task is: ${description}
+        Subject: ${subject}
         Deadline: ${deadlineDate} at ${deadlineTime}
         Priority: ${priorityLevel}
 
@@ -240,7 +241,7 @@ exports.autoSchedule = async (req, res) => {
         {
             "dateScheduled": "YYYY-MM-DD",
             "dateScheduledTime": "HH:MM:SS",
-            "message": "Provide a short, professional, and encouraging tip to help the user succeed in the task. The tone should be supportive, motivational, and appropriate for a student. Avoid generic phrases—give practical advice or a helpful mindset reminder."
+            "message": "Provide a short, professional, and encouraging tip to help the user succeed in the ${title} that have a description of ${description}. The tone should be supportive, motivational, and appropriate for a student. Avoid generic phrases—give practical advice or a helpful mindset reminder."
         }
         `;
 

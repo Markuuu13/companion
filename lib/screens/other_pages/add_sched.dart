@@ -93,6 +93,49 @@ class _AddScheduleState extends State<AddSchedule> {
     }
   }
 
+  Future<void> autoSchedule() async {
+    var userId = box.read('userid');
+
+    // Check if userId is null
+    if (userId == null) {
+      print("Error: User is not logged in. User ID is null.");
+      // You can display a snackbar or a dialog here to notify the user
+      Get.snackbar("Error", "User not logged in. Please login to proceed.");
+      return;
+    }
+    final hexColor =
+        selectedTileColor != null
+            ? '#${selectedTileColor!.value.toRadixString(16).padLeft(8, '0').toUpperCase()}'
+            : '';
+    if (titleController.text.isEmpty &&
+        subjController.text.isEmpty &&
+        deadlineDateController.text.isEmpty &&
+        deadlineTimeController.text.isEmpty) {
+      showErrorToast(context, "Please fill in all fields.");
+      return;
+    }
+    if (selectedTileColor == null) {
+      showErrorToast(context, "Please select a tile color.");
+      return;
+    }
+    try {
+      // Call the service to add the schedule
+      Get.to(
+        () => AiAnalyzeLoading(
+          title: titleController.text.trim(),
+          subject: subjController.text.trim(),
+          deadlineDate: deadlineDateController.text.trim(),
+          deadlineTime: deadlineTimeController.text.trim(),
+          priorityLevel: selectedPriorityLevel ?? '',
+          selectedTileColor: hexColor,
+        ),
+      );
+    } catch (e) {
+      print("Error adding schedule: $e");
+      showErrorToast(context, "Failed to add schedule. Please try again.");
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -110,7 +153,6 @@ class _AddScheduleState extends State<AddSchedule> {
   Widget build(BuildContext context) {
     final bool isAutoSchedAvailable =
         titleController.text.isNotEmpty &&
-        descController.text.isNotEmpty &&
         subjController.text.isNotEmpty &&
         deadlineDateController.text.isNotEmpty &&
         deadlineTimeController.text.isNotEmpty &&
@@ -171,7 +213,7 @@ class _AddScheduleState extends State<AddSchedule> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10, top: 20),
                     child: Text(
-                      "Title",
+                      "Title of the Task",
                       style: GoogleFonts.workSans(
                         color: mainColor,
                         fontSize: 18,
@@ -206,7 +248,7 @@ class _AddScheduleState extends State<AddSchedule> {
                         ),
                         SizedBox(width: 6),
                         Text(
-                          "(optional)",
+                          "(recommended for Auto Schedule)",
                           style: GoogleFonts.workSans(
                             color: mainColor,
                             fontSize: 12,
@@ -217,7 +259,7 @@ class _AddScheduleState extends State<AddSchedule> {
                     ),
                   ),
                   AddSchedTxtField(
-                    hintText: 'Description about your plan',
+                    hintText: 'What does this task all about? (optional)',
                     controller: descController,
                     maxLines: null,
                     keyboardType: TextInputType.multiline,
@@ -272,7 +314,7 @@ class _AddScheduleState extends State<AddSchedule> {
                         child: AddSchedTxtField(
                           isReadOnly: true,
                           onTap: () => deadlinePickDate(),
-                          hintText: 'Choose the date...',
+                          hintText: 'Date',
                           controller: deadlineDateController,
                         ),
                       ),
@@ -282,7 +324,7 @@ class _AddScheduleState extends State<AddSchedule> {
                         child: AddSchedTxtField(
                           isReadOnly: true,
                           onTap: () => deadlinePickTime(),
-                          hintText: 'Choose the time...',
+                          hintText: 'Time',
                           controller: deadlineTimeController,
                         ),
                       ),
@@ -353,7 +395,7 @@ class _AddScheduleState extends State<AddSchedule> {
                         child: AddSchedTxtField(
                           isReadOnly: true,
                           onTap: () => schedulePickDate(),
-                          hintText: 'Choose the date...',
+                          hintText: 'Date',
                           controller: scheduleDateController,
                         ),
                       ),
@@ -363,7 +405,7 @@ class _AddScheduleState extends State<AddSchedule> {
                         child: AddSchedTxtField(
                           isReadOnly: true,
                           onTap: () => schedulePickTime(),
-                          hintText: 'Choose the time...',
+                          hintText: 'Time',
                           controller: scheduleTimeController,
                         ),
                       ),
@@ -461,6 +503,29 @@ class _AddScheduleState extends State<AddSchedule> {
                       buildColorTile(color: red),
                     ],
                   ),
+                  SizedBox(height: 20),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        'assets/icons/gemini.png',
+                        width: 50,
+                        height: 50,
+                      ),
+                      Expanded(
+                        child: Text(
+                          "Can't decide when to do it? Let AI suggest a good time for you! Click the Auto Schedule button below.",
+                          style: GoogleFonts.workSans(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black54,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 30),
                     child: Row(
@@ -505,7 +570,7 @@ class _AddScheduleState extends State<AddSchedule> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: green,
                             ),
-                            onPressed: () => Get.to(() => AiAnalyzeLoading()),
+                            onPressed: autoSchedule,
                             child: Text(
                               "Auto Schedule",
                               style: GoogleFonts.workSans(

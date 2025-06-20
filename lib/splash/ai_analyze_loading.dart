@@ -2,10 +2,27 @@ import 'dart:async';
 import 'package:companion/screens/other_pages/ai_suggestion.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart'; 
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 class AiAnalyzeLoading extends StatefulWidget {
-  const AiAnalyzeLoading({super.key});
+  final String title;
+  final String? description;
+  final String subject;
+  final String deadlineDate;
+  final String deadlineTime;
+  final String priorityLevel;
+  final String selectedTileColor;
+  const AiAnalyzeLoading({
+    super.key,
+    required this.title,
+    this.description,
+    required this.subject,
+    required this.deadlineDate,
+    required this.deadlineTime,
+    required this.priorityLevel,
+    required this.selectedTileColor,
+  });
 
   @override
   State<AiAnalyzeLoading> createState() => _AiAnalyzeLoadingState();
@@ -25,10 +42,7 @@ class _AiAnalyzeLoadingState extends State<AiAnalyzeLoading> {
   int currentIndex = 0;
   Timer? _timer;
 
-  @override
-  void initState() {
-    super.initState();
-
+  void startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
       setState(() {
         currentIndex = (currentIndex + 1) % messages.length;
@@ -38,11 +52,34 @@ class _AiAnalyzeLoadingState extends State<AiAnalyzeLoading> {
     Future.delayed(const Duration(seconds: 8), () {
       _timer?.cancel();
       if (mounted) {
-        Get.off(() => const AiSuggestion(),
-            transition: Transition.fadeIn,
-            duration: const Duration(milliseconds: 500));
+        Get.off(
+          () => AiSuggestion(
+            title: widget.title,
+            subject: widget.subject,
+            deadlineDate: widget.deadlineDate,
+            deadlineTime: widget.deadlineTime,
+            priorityLevel: widget.priorityLevel,
+            selectedTileColor: widget.selectedTileColor,
+          ),
+          transition: Transition.fadeIn,
+          duration: const Duration(milliseconds: 500),
+        );
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print('📦 AI Analyze Loading Received:');
+    print('Title: ${widget.title}');
+    print('Description: ${widget.description}');
+    print('Subject: ${widget.subject}');
+    print('Deadline Date: ${widget.deadlineDate}');
+    print('Deadline Time: ${widget.deadlineTime}');
+    print('Priority Level: ${widget.priorityLevel}');
+    print('Selected Tile Color: ${widget.selectedTileColor}');
+    startTimer();
   }
 
   @override
@@ -59,11 +96,13 @@ class _AiAnalyzeLoadingState extends State<AiAnalyzeLoading> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircularProgressIndicator(
-              color: Colors.deepPurple,
-              strokeWidth: 4,
+            Lottie.asset(
+              'assets/animations/lightbulb.json',
+              repeat: true,
+              width: 200,
+              height: 200,
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: 30),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 500),
               transitionBuilder:
