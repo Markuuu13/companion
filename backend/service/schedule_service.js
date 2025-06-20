@@ -192,23 +192,59 @@ exports.deleteTaskSchedule = async (req, res) => {
 // GEMINI
 exports.autoSchedule = async (req, res) => {
     try {
-        const { title, deadlineDate, deadlineTime, priorityLevel, existingSchedule } = req.body;
+        const { user_id, title, description, deadlineDate, deadlineTime, priorityLevel } = req.body;
+
+        const { data: userDetails, error: userError } = await supabase
+            .from('users')
+            .select("*")
+            .eq("user_id", user_id)
+            .single();
+
+        if (userError || !userDetails) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const { data: incomingSchedule, error: scheduleError } = await supabase
+            .from('schedule')
+            .select('dateScheduled, dateScheduledTime')
+            .eq('user_id', user_id);
+
+        if (scheduleError) {
+            return res.status(500).json({ message: "Failed to fetch schedules", error: scheduleError.message });
+        }
+
+        console.log("Incoming Schedule: ", incomingSchedule);
+
+        const currentDateTime = new Date().toLocaleString('en-US', { timeZone: 'Asia/Manila' });
 
         const prompt = `
-        You are an AI assistant that schedule tasks. A user has this task:
-        Task: ${title}
+        Hi AI assistant that schedule tasks. 
+        I am ${userDetails.educationLevel} ${userDetails.selectedGrade} student. I want to avoid cramming and want to be organized with my tasks.
+        
+        Can you create a schedule for this task?
+        Task Title: ${title}
+        The task is all about or the description of the task is: ${description}
         Deadline: ${deadlineDate} at ${deadlineTime}
         Priority: ${priorityLevel}
-        Existing schedule: ${JSON.stringify(existingSchedule)}
 
-        Suggest the best time and date to do this task before the deadline. Respond in this exact JSON format:
+        Interpret priority as follows:
+        - High Priority: Schedule this task as early as possible, preferably within the next 1–2 days.
+        - Medium Priority: Schedule within a few days, but before the deadline.
+        - Low Priority: Can be scheduled flexibly as long as it doesn’t conflict with other tasks and is before the deadline.
+        
+        Avoid conflicts with those existing schedule: ${JSON.stringify(incomingSchedule)}
+
+        Suggest the best time and date to do this task before the deadline. Rely on the priority level and what is task all about. Also the user is a ${userDetails.educationLevel} ${userDetails.selectedGrade} student so consider the time of the day that is best for studying and doing tasks. 
+        Respond in this exact JSON format:
+        Make sure the suggested time is in the future — it must be later than the current time now: ${currentDateTime}.
         {
-            "suggestedDate": "MM-DD-YYYY",
-            "suggestedTime": "HH:MM AM/PM"
+            "dateScheduled": "YYYY-MM-DD",
+            "dateScheduledTime": "HH:MM:SS",
+            "message": "Provide a short, professional, and encouraging tip to help the user succeed in the task. The tone should be supportive, motivational, and appropriate for a student. Avoid generic phrases—give practical advice or a helpful mindset reminder."
         }
         `;
 
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" })
+        const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" })
         const result = await model.generateContent(prompt);
         const text = result.response.text();
 
@@ -216,7 +252,7 @@ exports.autoSchedule = async (req, res) => {
         const jsonEnd = text.lastIndexOf('}') + 1;
         const jsonResponse = JSON.parse(text.substring(jsonStart, jsonEnd));
 
-        res.json(jsonResponse);
+        res.status(200).json(jsonResponse);
     } catch (error) {
         console.error("Gemini error: ", error.message);
         return res.status(500).json({ message: error.message });

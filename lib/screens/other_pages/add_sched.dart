@@ -9,6 +9,7 @@ import 'package:super_tooltip/super_tooltip.dart';
 
 import '../../components/add_sched_txt.dart';
 import '../../service/schedule_service.dart';
+import '../../splash/ai_analyze_loading.dart';
 
 class AddSchedule extends StatefulWidget {
   const AddSchedule({super.key});
@@ -504,7 +505,7 @@ class _AddScheduleState extends State<AddSchedule> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: green,
                             ),
-                            onPressed: () {},
+                            onPressed: () => Get.to(() => AiAnalyzeLoading()),
                             child: Text(
                               "Auto Schedule",
                               style: GoogleFonts.workSans(

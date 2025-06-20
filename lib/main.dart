@@ -1,4 +1,6 @@
 import 'package:companion/screens/authentication/verifyemail.dart';
+import 'package:companion/screens/navigation/aiassistant.dart';
+import 'package:companion/screens/other_pages/ai_suggestion.dart';
 import 'package:companion/splash/splash_screen_logged.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,7 +39,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: SplashScreenLoggedIn(),
+      home: AiSuggestion(),
       // home: userId != null ? Navigation() : LoginPage(),
     );
   }
