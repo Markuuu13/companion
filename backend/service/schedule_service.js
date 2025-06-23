@@ -107,15 +107,19 @@ exports.displayScheduleToday = async (req, res) => {
 }
 
 // Overall Schedules
-exports.displaySchedules = async (req, res) => {
+exports.incomingSchedule = async (req, res) => {
 
     try {
-        const { user_id } = req.body;
+        const { user_id } = req.query;
+
+        const today = new Date().toLocaleDateString('en-CA');
 
         const { data, error } = await supabase
             .from("schedule")
             .select("schedule_id, *")
             .eq("user_id", user_id)
+            .gt("dateScheduled", today)
+            .order("dateScheduled", { ascending: true });
 
         if (!data) {
             return res.status(404).json({ message: "User not found or no schedules created" })
@@ -153,7 +157,29 @@ exports.deleteTaskSchedule = async (req, res) => {
 
     }
 }
+exports.deleteMultipleTasks = async (req, res) => {
+    try {
+        const { schedule_ids } = req.body;
 
+        if (!Array.isArray(schedule_ids) || schedule_ids.length === 0) {
+            return res.status(400).json({ message: "No schedule IDs provided" });
+        }
+
+        const { data, error } = await supabase
+            .from("schedule")
+            .delete()
+            .in("schedule_id", schedule_ids);
+
+        if (error) {
+            return res.status(500).json({ message: "Error deleting schedules", error });
+        }
+
+        return res.status(200).json({ message: "Schedules deleted successfully", data });
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
 // OPENAI
 // exports.autoSchedule = async (req, res) => {
 //     try {
@@ -237,7 +263,7 @@ exports.autoSchedule = async (req, res) => {
 
         Suggest the best time and date to do this task before the deadline. Rely on the priority level and what is task all about. Also the user is a ${userDetails.educationLevel} ${userDetails.selectedGrade} student so consider the time of the day that is best for studying and doing tasks. 
         Respond in this exact JSON format:
-        Make sure the suggested time is in the future — it must be later than the current time now: ${currentDateTime}.
+        Strictly, Make sure the suggested time is in the future — it must be later than the current time now: ${currentDateTime}.
         {
             "dateScheduled": "YYYY-MM-DD",
             "dateScheduledTime": "HH:MM:SS",

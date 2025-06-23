@@ -55,6 +55,7 @@ class _AiAnalyzeLoadingState extends State<AiAnalyzeLoading> {
         Get.off(
           () => AiSuggestion(
             title: widget.title,
+            description: widget.description,
             subject: widget.subject,
             deadlineDate: widget.deadlineDate,
             deadlineTime: widget.deadlineTime,
@@ -97,7 +98,7 @@ class _AiAnalyzeLoadingState extends State<AiAnalyzeLoading> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Lottie.asset(
-              'assets/animations/lightbulb.json',
+              'assets/animations/analyzing.json',
               repeat: true,
               width: 200,
               height: 200,

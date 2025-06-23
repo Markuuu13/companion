@@ -6,18 +6,27 @@ import 'package:lottie/lottie.dart';
 import '../components/navigation.dart';
 import '../screens/authentication/login.dart';
 
-class SplashScreenLoggedIn extends StatelessWidget {
+class SplashScreenLoggedIn extends StatefulWidget {
   const SplashScreenLoggedIn({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final box = GetStorage();
-    final userId = box.read('userid');
+  State<SplashScreenLoggedIn> createState() => _SplashScreenLoggedInState();
+}
 
-    Future.delayed(Duration(seconds: 5), () {
+class _SplashScreenLoggedInState extends State<SplashScreenLoggedIn> {
+  final box = GetStorage();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 2), () {
+      final userId = box.read('userid');
       Get.offAll(() => userId != null ? Navigation() : LoginPage());
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Lottie.asset(

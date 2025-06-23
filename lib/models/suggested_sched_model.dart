@@ -13,7 +13,7 @@ class SuggestedSchedModel {
   SuggestedSchedModel({
     required this.userId,
     required this.title,
-    required this.description,
+    this.description,
     required this.subject,
     required this.deadlineDate,
     required this.deadlineTime,

@@ -29,6 +29,7 @@ class _HomeState extends State<Home> {
 
   Map<String, dynamic>? userProfile;
   List<dynamic>? scheduleToday;
+  List<dynamic>? incomingSchedules;
   bool isLoading = true;
   final box = GetStorage();
 
@@ -38,6 +39,7 @@ class _HomeState extends State<Home> {
     _loadUserProfile();
     getScheduleToday();
     startLoadingTimer();
+    getIncomingSchedules();
   }
 
   Future<void> _loadUserProfile() async {
@@ -66,6 +68,19 @@ class _HomeState extends State<Home> {
     }
   }
 
+  Future<void> getIncomingSchedules() async {
+    final userId = box.read('userid');
+    try {
+      final data = await scheduleService.incomingSchedules(userId: userId);
+      setState(() {
+        incomingSchedules = data;
+        print("Incoming schedules: $incomingSchedules");
+      });
+    } catch (e) {
+      print("Error fetching incoming schedules: $e");
+    }
+  }
+
   void startLoadingTimer() {
     Timer(const Duration(seconds: 1), () {
       if (mounted) {
@@ -79,8 +94,12 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
+        shadowColor: Colors.transparent, // fully remove gray shadow
+        surfaceTintColor: Colors.white,
+        elevation: 0,
         backgroundColor: Colors.white,
         actions: [
           isLoading || userProfile != null
@@ -88,6 +107,7 @@ class _HomeState extends State<Home> {
                 onPressed: () {
                   Get.to(() => AddSchedule())?.then((_) {
                     scheduleController.fetchTodaySchedule();
+                    getIncomingSchedules();
                   });
                 },
                 icon: Icon(Icons.add, color: completeColor, size: 35),
@@ -130,12 +150,89 @@ class _HomeState extends State<Home> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          SizedBox(height: 30),
+                          Obx(() {
+                            final totalCount =
+                                scheduleController.scheduleToday.length;
+                            final doneCount =
+                                scheduleController.scheduleToday
+                                    .where((sched) => sched['status_id'] == 3)
+                                    .length;
+
+                            if (totalCount == 0) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  LinearProgressIndicator(
+                                    value: 0,
+                                    color: green,
+                                    backgroundColor: Colors.grey[300],
+                                    minHeight: 25,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    "No tasks for today.",
+                                    style: GoogleFonts.workSans(
+                                      color: Colors.grey,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+
+                            return Column(
+                              children: [
+                                Stack(
+                                  alignment: Alignment.centerLeft,
+                                  children: [
+                                    LinearProgressIndicator(
+                                      value: doneCount / totalCount,
+                                      color: green,
+                                      backgroundColor: Colors.grey[300],
+                                      minHeight: 25,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    Positioned.fill(
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "${((doneCount / totalCount) * 100).toStringAsFixed(0)}%",
+                                          style: GoogleFonts.workSans(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                  ),
+                                  child: Text(
+                                    "You've completed $doneCount of $totalCount tasks today!",
+                                    style: GoogleFonts.workSans(
+                                      fontSize: 14,
+                                      color: red,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
                         ],
                       ),
                     ),
                   ),
+
                   Expanded(
-                    flex: 3,
+                    flex: 2,
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -157,24 +254,25 @@ class _HomeState extends State<Home> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            padding: const EdgeInsets.symmetric(vertical: 5),
                             child: SizedBox(
-                              height: 100,
+                              height: 120,
                               width: double.infinity,
-                              child: DateGrid(),
+                              child: DateGrid(
+                                incomingSchedules: incomingSchedules,
+                                onDataChanged: getIncomingSchedules,
+                              ),
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 10,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Row(
                               children: [
                                 Text(
                                   "Today's Plan",
                                   style: GoogleFonts.workSans(
                                     fontSize: 25,
+                                    color: green,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -182,12 +280,23 @@ class _HomeState extends State<Home> {
                                 Row(
                                   children: [
                                     Icon(Icons.check, color: green),
-                                    Text(
-                                      "0",
-                                      style: GoogleFonts.workSans(
-                                        color: Colors.black,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
+                                    Obx(
+                                      () => Text(
+                                        scheduleController.scheduleToday.isEmpty
+                                            ? "0"
+                                            : scheduleController.scheduleToday
+                                                .where(
+                                                  (sched) =>
+                                                      sched['status_id'] == 3,
+                                                )
+                                                .isNotEmpty
+                                            ? "${scheduleController.scheduleToday.where((sched) => sched['status_id'] == 3).length}"
+                                            : "0",
+                                        style: GoogleFonts.workSans(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                     SizedBox(width: 20),

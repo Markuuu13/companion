@@ -51,7 +51,7 @@ class ScheduleService {
   Future<dynamic> scheduleToday(BuildContext context, int userId) async {
     try {
       final response = await http.post(
-        Uri.parse('$backendUrl/scheduleToday'),
+        Uri.parse('$backendUrl/schedule/scheduleToday'),
         body: jsonEncode({"user_id": userId}),
         headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
@@ -76,6 +76,29 @@ class ScheduleService {
       }
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  Future<dynamic> incomingSchedules({required int userId}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$backendUrl/schedule/incomingSchedules?user_id=$userId'),
+        headers: <String, String>{
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print("Incoming schedules fetched: ${response.body}");
+        final incomingSchedules = jsonDecode(response.body);
+        return incomingSchedules['data'];
+      } else {
+        print("Failed to fetch incoming schedules");
+        return null;
+      }
+    } catch (e) {
+      print(e.toString());
+      return null;
     }
   }
 
@@ -123,6 +146,29 @@ class ScheduleService {
       }
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  Future<bool> deleteMultipleSchedules(List<int> scheduleIds) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$backendUrl/schedule/deleteMultiple'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'schedule_ids': scheduleIds}),
+      );
+
+      final result = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        print("Multiple schedules deleted successfully: $result");
+        return true;
+      } else {
+        print("Failed to delete multiple schedules: ${result['message']}");
+        return false;
+      }
+    } catch (e) {
+      print("Error deleting multiple schedules: $e");
+      return false;
     }
   }
 }

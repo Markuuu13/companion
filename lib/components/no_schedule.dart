@@ -15,12 +15,12 @@ class NoSchedule extends StatelessWidget {
             Lottie.asset(
               'assets/animations/calendar.json',
               repeat: true,
-              width: 230,
-              height: 230,
+              width: 200,
+              height: 200,
             ),
         
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
               child: Text(
                 'No Schedule for today, to add a schedule, click the + button at the top right corner.',
                 overflow: TextOverflow.clip,

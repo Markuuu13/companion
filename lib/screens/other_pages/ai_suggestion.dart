@@ -4,6 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../service/ai_service.dart';
 
@@ -40,7 +41,7 @@ class _AiSuggestionState extends State<AiSuggestion> {
     final userId = box.read('userid');
 
     final response = await aiService.getSuggestedSchedule(
-      userId: userId, // Replace with actual user ID
+      userId: userId, 
       title: widget.title,
       description: widget.description,
       subject: widget.subject,
@@ -59,6 +60,30 @@ class _AiSuggestionState extends State<AiSuggestion> {
     }
   }
 
+  void addSuggestedSchedule() async {
+    var userId = box.read('userid');
+    try {
+      await aiService.addSuggestedSchedule(
+        context,
+        userId: userId,
+        title: widget.title,
+        description: widget.description,
+        subject: widget.subject,
+        deadlineDate: widget.deadlineDate,
+        deadlineTime: widget.deadlineTime,
+        priorityLevel: widget.priorityLevel,
+        dateScheduled: suggestedSchedule!['dateScheduled'],
+        dateScheduledTime: suggestedSchedule!['dateScheduledTime'],
+        preferColor: widget.selectedTileColor,
+      );
+      print(widget.selectedTileColor);
+    } catch (e) {
+      print('Error adding suggested schedule: $e');
+      showErrorToast(context, "Error occured. Please try again.");
+      return;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -68,152 +93,173 @@ class _AiSuggestionState extends State<AiSuggestion> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  Icons.lightbulb,
-                  color: const Color.fromARGB(255, 222, 200, 1),
-                  size: 35,
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    suggestedSchedule!['message'],
-                    overflow: TextOverflow.clip,
-                    style: GoogleFonts.workSans(
-                      color: Colors.black45,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+      extendBodyBehindAppBar: false,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        shadowColor: Colors.transparent, // fully remove gray shadow
+        surfaceTintColor: Colors.white,
+        elevation: 0,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child:
+                suggestedSchedule == null
+                    ? Center(child: CircularProgressIndicator())
+                    : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Lottie.asset(
+                              'assets/animations/lightbulb.json',
+                              repeat: true,
+                              width: 60,
+                              height: 60,
+                            ),
+                            Expanded(
+                              child: Text(
+                                suggestedSchedule!['message'],
+                                overflow: TextOverflow.clip,
+                                style: GoogleFonts.workSans(
+                                  color: Colors.black45,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 40),
+                        buildDeadlineOrScheduled(
+                          colorOfTitle: red,
+                          titleOfSection: "Your Task's Deadline",
+                          date: widget.deadlineDate,
+                          time: widget.deadlineTime,
+                        ),
+                        SizedBox(height: 40),
+                        buildDeadlineOrScheduled(
+                          colorOfTitle: green,
+                          titleOfSection: "Suggested Schedule to do the Task",
+                          date: formatDate(suggestedSchedule?['dateScheduled']),
+                          time: formatTime(
+                            suggestedSchedule?['dateScheduledTime'],
+                          ),
+                        ),
+                        SizedBox(height: 50),
+                        Row(
+                          children: [
+                            Icon(Icons.task, size: 30, color: Colors.black87),
+                            SizedBox(width: 10),
+                            Text(
+                              "Task's Details",
+                              overflow: TextOverflow.clip,
+                              style: GoogleFonts.workSans(
+                                color: Colors.black87,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Text(
+                              "Title:",
+                              overflow: TextOverflow.clip,
+                              style: GoogleFonts.workSans(
+                                color: Colors.black87,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              widget.title,
+                              overflow: TextOverflow.clip,
+                              style: GoogleFonts.workSans(
+                                color: Colors.black87,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Description:",
+                              overflow: TextOverflow.clip,
+                              style: GoogleFonts.workSans(
+                                color: Colors.black87,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                widget.description ?? "No description",
+                                overflow: TextOverflow.clip,
+                                style: GoogleFonts.workSans(
+                                  color: Colors.black87,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Text(
+                              "Subject/Course:",
+                              overflow: TextOverflow.clip,
+                              style: GoogleFonts.workSans(
+                                color: Colors.black87,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              widget.subject,
+                              overflow: TextOverflow.clip,
+                              style: GoogleFonts.workSans(
+                                color: Colors.black87,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 30),
+                        Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: green,
+                            ),
+                            onPressed: addSuggestedSchedule,
+                            child: Text(
+                              "Add this Schedule",
+                              style: GoogleFonts.workSans(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                      ],
                     ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 40),
-            buildDeadlineOrScheduled(
-              colorOfTitle: red,
-              titleOfSection: "Your Task's Deadline",
-              date: widget.deadlineDate,
-              time: widget.deadlineTime,
-            ),
-            SizedBox(height: 40),
-            buildDeadlineOrScheduled(
-              colorOfTitle: green,
-              titleOfSection: "Suggested Schedule to do the Task",
-              date: formatDate(suggestedSchedule?['dateScheduled']),
-              time: formatTime(suggestedSchedule?['dateScheduledTime']),
-            ),
-            SizedBox(height: 50),
-            Row(
-              children: [
-                Icon(Icons.task, size: 30, color: Colors.black87),
-                SizedBox(width: 10),
-                Text(
-                  "Task's Details",
-                  overflow: TextOverflow.clip,
-                  style: GoogleFonts.workSans(
-                    color: Colors.black87,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Text(
-                  "Title:",
-                  overflow: TextOverflow.clip,
-                  style: GoogleFonts.workSans(
-                    color: Colors.black87,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Text(
-                  widget.title,
-                  overflow: TextOverflow.clip,
-                  style: GoogleFonts.workSans(
-                    color: Colors.black87,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Text(
-                  "Description:",
-                  overflow: TextOverflow.clip,
-                  style: GoogleFonts.workSans(
-                    color: Colors.black87,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Text(
-                  widget.description ?? "No description",
-                  overflow: TextOverflow.clip,
-                  style: GoogleFonts.workSans(
-                    color: Colors.black87,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Text(
-                  "Subject/Course:",
-                  overflow: TextOverflow.clip,
-                  style: GoogleFonts.workSans(
-                    color: Colors.black87,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Text(
-                  widget.subject,
-                  overflow: TextOverflow.clip,
-                  style: GoogleFonts.workSans(
-                    color: Colors.black87,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-            Spacer(),
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: green),
-                onPressed: () {},
-                child: Text(
-                  "Add this Schedule",
-                  style: GoogleFonts.workSans(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 60),
-          ],
+          ),
         ),
       ),
     );

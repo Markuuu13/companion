@@ -5,7 +5,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:super_tooltip/super_tooltip.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 import '../../components/add_sched_txt.dart';
 import '../../service/schedule_service.dart';
@@ -31,14 +34,43 @@ class _AddScheduleState extends State<AddSchedule> {
   final box = GetStorage();
   String? selectedPriorityLevel;
   Color? selectedTileColor;
+  bool isAlarmEnabled = false;
+  List<String> alarmOffsets = [
+    "At date scheduled",
+    "5 minutes before",
+    "10 minutes before",
+    "30 minutes before",
+    "1 hour before",
+  ];
+
+  String selectedAlarmOffset = "At date scheduled";
+
+  Future<void> showConfettiDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        Future.delayed(const Duration(seconds: 3), () {
+          Navigator.of(context).pop(); // close dialog after 2 seconds
+        });
+
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            height: 200,
+            width: 200,
+            child: Lottie.asset('assets/animations/confetti.json'),
+          ),
+        );
+      },
+    );
+  }
 
   Future<void> _onAddSchedule() async {
     var userId = box.read('userid');
 
-    // Check if userId is null
     if (userId == null) {
       print("Error: User is not logged in. User ID is null.");
-      // You can display a snackbar or a dialog here to notify the user
       Get.snackbar("Error", "User not logged in. Please login to proceed.");
       return;
     }
@@ -72,7 +104,6 @@ class _AddScheduleState extends State<AddSchedule> {
         scheduleTime: scheduleTimeController.text.trim(),
         tileColor: hexColor,
       );
-
       // Clear the selected priority level
       setState(() {
         titleController.clear();
@@ -87,6 +118,7 @@ class _AddScheduleState extends State<AddSchedule> {
       });
 
       showSuccessToast(context, "Schedule added successfully!");
+      await showConfettiDialog(context);
     } catch (e) {
       print("Error adding schedule: $e");
       showErrorToast(context, "Failed to add schedule. Please try again.");
@@ -123,6 +155,7 @@ class _AddScheduleState extends State<AddSchedule> {
       Get.to(
         () => AiAnalyzeLoading(
           title: titleController.text.trim(),
+          description: descController.text.trim(),
           subject: subjController.text.trim(),
           deadlineDate: deadlineDateController.text.trim(),
           deadlineTime: deadlineTimeController.text.trim(),
@@ -173,9 +206,9 @@ class _AddScheduleState extends State<AddSchedule> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: SingleChildScrollView(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -308,7 +341,7 @@ class _AddScheduleState extends State<AddSchedule> {
                   ),
                   Row(
                     children: [
-                      Icon(FontAwesomeIcons.calendar, color: Colors.black),
+                      Icon(FontAwesomeIcons.calendar, color: red),
                       SizedBox(width: 10),
                       Expanded(
                         child: AddSchedTxtField(
@@ -376,12 +409,14 @@ class _AddScheduleState extends State<AddSchedule> {
                           ),
                         ),
                         SizedBox(width: 10),
-                        Text(
-                          "(Long press to view)",
-                          style: GoogleFonts.workSans(
-                            color: mainColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                        Expanded(
+                          child: Text(
+                            "(Long press to view)",
+                            style: GoogleFonts.workSans(
+                              color: mainColor,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ],
@@ -389,7 +424,7 @@ class _AddScheduleState extends State<AddSchedule> {
                   ),
                   Row(
                     children: [
-                      Icon(FontAwesomeIcons.calendar, color: Colors.black),
+                      Icon(FontAwesomeIcons.calendarCheck, color: green),
                       SizedBox(width: 10),
                       Expanded(
                         child: AddSchedTxtField(
@@ -505,12 +540,76 @@ class _AddScheduleState extends State<AddSchedule> {
                   ),
                   SizedBox(height: 20),
                   Row(
+                    children: [
+                      Icon(Icons.alarm, color: mainColor),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Text(
+                          'Set Alarm',
+                          style: GoogleFonts.workSans(
+                            fontSize: 18,
+                            color: mainColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Switch(
+                        value: isAlarmEnabled,
+                        onChanged: (value) {
+                          setState(() {
+                            isAlarmEnabled = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  if (isAlarmEnabled)
+                    Row(
+                      children: [
+                        Text(
+                          "Alarm Offset:",
+                          style: GoogleFonts.workSans(
+                            color: mainColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        DropdownButton<String>(
+                          value: selectedAlarmOffset,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedAlarmOffset = value!;
+                            });
+                          },
+                          items:
+                              alarmOffsets
+                                  .map(
+                                    (offset) => DropdownMenuItem(
+                                      value: offset,
+                                      child: Text(
+                                        offset,
+                                        style: GoogleFonts.workSans(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                        ),
+                      ],
+                    ),
+                  SizedBox(height: 30),
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Image.asset(
                         'assets/icons/gemini.png',
-                        width: 50,
-                        height: 50,
+                        width: 30,
+                        height: 30,
+                        color: Colors.blueAccent,
                       ),
                       Expanded(
                         child: Text(
@@ -527,7 +626,7 @@ class _AddScheduleState extends State<AddSchedule> {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    padding: const EdgeInsets.symmetric(vertical: 40),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -712,5 +811,14 @@ class _AddScheduleState extends State<AddSchedule> {
         ),
       ),
     );
+  }
+
+  DateTime combineDateTime(String dateStr, String timeStr) {
+    final fullDateTimeStr = "$dateStr $timeStr";
+    return DateFormat("yyyy-MM-dd HH:mm:ss").parse(fullDateTimeStr);
+  }
+
+  tz.TZDateTime toTZDateTime(DateTime dateTime) {
+    return tz.TZDateTime.from(dateTime, tz.local);
   }
 }
