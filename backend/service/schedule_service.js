@@ -90,6 +90,7 @@ exports.displayScheduleToday = async (req, res) => {
             .select("schedule_id, *")
             .eq("user_id", user_id)
             .eq("dateScheduled", today)
+            .order("dateScheduledTime", { ascending: true });
 
         if (error) {
             return res.status(500).json({ message: "Error fetching schedule", error: error.message });

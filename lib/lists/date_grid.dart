@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -73,35 +74,45 @@ class DateGrid extends StatelessWidget {
                     onDataChanged: onDataChanged,
                   ),
                 ),
-            child: Container(
-              width: 200,
-              height: 300,
-              decoration: BoxDecoration(
-                color: mainColor,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(40),
-                    blurRadius: 1,
-                    spreadRadius: 1,
-                    offset: Offset(0, 2), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(
+                  FontAwesomeIcons.solidCalendar,
+                  size: 80,
+                  color: red,
+                  shadows: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 2,
+                      spreadRadius: 2,
+                      offset: Offset(0, 7),
+                    ),
+                  ],
+                ),
+
+                // ClipRRect(
+                //   borderRadius: BorderRadius.circular(15),
+                //   child: Image.asset(
+                //     'assets/icons/calendar_bg.png', // your calendar icon image
+                //     fit: BoxFit.cover,
+                //     width: 200,
+                //     height: 300,
+                //   ),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 29),
                   child: Text(
                     DateFormat('MMM \nd').format(date),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.workSans(
-                      fontSize: 15,
+                      fontSize: 13,
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         );

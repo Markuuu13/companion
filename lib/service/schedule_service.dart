@@ -106,7 +106,7 @@ class ScheduleService {
     required BuildContext context,
     required int scheduleId,
     required int status,
-    required String message,
+    String? message,
   }) async {
     try {
       final response = await http.put(
@@ -118,7 +118,9 @@ class ScheduleService {
       final result = jsonDecode(response.body);
       print(result);
       if (response.statusCode == 200) {
-        showSuccessToast(context, message);
+        if (message != null && message.isNotEmpty) {
+          showSuccessToast(context, message);
+        }
       } else {
         showErrorToast(context, "${result['message']}");
       }

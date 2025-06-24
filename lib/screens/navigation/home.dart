@@ -150,7 +150,7 @@ class _HomeState extends State<Home> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 30),
+                          SizedBox(height: 50),
                           Obx(() {
                             final totalCount =
                                 scheduleController.scheduleToday.length;
@@ -256,7 +256,7 @@ class _HomeState extends State<Home> {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: SizedBox(
-                              height: 120,
+                              height: 110,
                               width: double.infinity,
                               child: DateGrid(
                                 incomingSchedules: incomingSchedules,
@@ -272,7 +272,7 @@ class _HomeState extends State<Home> {
                                   "Today's Plan",
                                   style: GoogleFonts.workSans(
                                     fontSize: 25,
-                                    color: green,
+                                    color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

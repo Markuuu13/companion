@@ -41,7 +41,7 @@ class _AiSuggestionState extends State<AiSuggestion> {
     final userId = box.read('userid');
 
     final response = await aiService.getSuggestedSchedule(
-      userId: userId, 
+      userId: userId,
       title: widget.title,
       description: widget.description,
       subject: widget.subject,
@@ -137,8 +137,8 @@ class _AiSuggestionState extends State<AiSuggestion> {
                         buildDeadlineOrScheduled(
                           colorOfTitle: red,
                           titleOfSection: "Your Task's Deadline",
-                          date: widget.deadlineDate,
-                          time: widget.deadlineTime,
+                          date: formatDeadlineDate(widget.deadlineDate),
+                          time: formatDeadlineTime(widget.deadlineTime),
                         ),
                         SizedBox(height: 40),
                         buildDeadlineOrScheduled(
@@ -346,6 +346,40 @@ class _AiSuggestionState extends State<AiSuggestion> {
       ).format(parsedTime).toLowerCase(); // e.g. 5:00pm
     } catch (e) {
       return 'Invalid time';
+    }
+  }
+
+  String formatDeadlineDate(String? dateString) {
+    if (dateString == null) return 'Invalid date';
+    try {
+      // Try ISO format first
+      return DateFormat('MM-dd-yy').format(DateTime.parse(dateString));
+    } catch (_) {
+      try {
+        // Try MM-dd-yyyy
+        final parsed = DateFormat('M-d-yyyy').parse(dateString);
+        return DateFormat('MM-dd-yy').format(parsed);
+      } catch (e) {
+        return 'Invalid date';
+      }
+    }
+  }
+
+  String formatDeadlineTime(String? timeString) {
+    if (timeString == null) return 'Invalid time';
+    try {
+      // Try full HH:mm:ss format
+      return DateFormat(
+        'h:mma',
+      ).format(DateFormat('HH:mm:ss').parse(timeString)).toLowerCase();
+    } catch (_) {
+      try {
+        // Try just HH:mm format
+        final parsed = DateFormat('HH:mm').parse(timeString);
+        return DateFormat('h:mma').format(parsed).toLowerCase();
+      } catch (e) {
+        return 'Invalid time';
+      }
     }
   }
 }

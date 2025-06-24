@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:companion/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -19,6 +21,38 @@ class TodayScheduleDetails extends StatefulWidget {
 class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
   final ScheduleService scheduleService = ScheduleService();
   bool isDoingTask = false;
+  Timer? countdownTimer;
+  Duration remainingTime = Duration.zero;
+  bool showCountdown = false;
+  bool missedDeadline = false;
+  void startCountdownToDeadline() {
+    final deadline = DateFormat("yyyy-MM-dd HH:mm").parse(
+      "${widget.scheduleDetails!['deadlineDate']} ${widget.scheduleDetails!['deadlineTime']}",
+    );
+    final now = DateTime.now();
+    final diff = deadline.difference(now);
+
+    setState(() {
+      remainingTime = diff;
+      showCountdown = true;
+    });
+
+    countdownTimer?.cancel(); // Stop any previous timer
+    countdownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (remainingTime.inSeconds <= 0) {
+        timer.cancel();
+        updateSchedMissed();
+        setState(() {
+          remainingTime = Duration.zero;
+          missedDeadline = true; // Show message flag
+        });
+      } else {
+        setState(() {
+          remainingTime = remainingTime - Duration(seconds: 1);
+        });
+      }
+    });
+  }
 
   void updateSchedPending(String message) async {
     final id = widget.scheduleDetails!['schedule_id'];
@@ -55,8 +89,33 @@ class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
       message: message,
     );
 
+    countdownTimer?.cancel();
+    final box = GetStorage();
+    box.remove("task_$id");
+
     setState(() {
       widget.scheduleDetails!['status_id'] = 3;
+      showCountdown = false;
+      remainingTime = Duration.zero;
+    });
+  }
+
+  void updateSchedMissed() async {
+    final id = widget.scheduleDetails!['schedule_id'];
+
+    if (id == null) {
+      showErrorToast(context, "Invalid schedule ID");
+      return;
+    }
+
+    await scheduleService.updateScheduleStatus(
+      context: context,
+      scheduleId: id,
+      status: 4,
+    );
+
+    setState(() {
+      widget.scheduleDetails!['status_id'] = 4;
     });
   }
 
@@ -94,9 +153,40 @@ class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
   String formatDateTime(String date, String time) {
     try {
       final dateTime = DateFormat("yyyy-MM-dd HH:mm").parse("$date $time");
-      return DateFormat("MM-dd-yyyy hh:mm a").format(dateTime);
+      return DateFormat("MMMM d yyyy · hh:mm a").format(dateTime);
+      // Example output: June 25 2025 · 12:00 PM
     } catch (e) {
       return "$date $time"; // fallback if parsing fails
+    }
+  }
+
+  @override
+  void dispose() {
+    countdownTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final box = GetStorage();
+    final taskId = widget.scheduleDetails!['schedule_id'];
+    final startTimeString = box.read("task_$taskId");
+
+    final deadline = DateFormat("yyyy-MM-dd HH:mm").parse(
+      "${widget.scheduleDetails!['deadlineDate']} ${widget.scheduleDetails!['deadlineTime']}",
+    );
+    final now = DateTime.now();
+
+    if (now.isAfter(deadline) && widget.scheduleDetails!['status_id'] == 2) {
+      missedDeadline = true;
+      showCountdown = false;
+    } else if (startTimeString != null &&
+        widget.scheduleDetails!['status_id'] == 2) {
+      // Only start countdown if still valid
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        startCountdownToDeadline();
+      });
     }
   }
 
@@ -128,28 +218,37 @@ class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
           children: [
             Row(
               children: [
-                Text(
-                  "${widget.scheduleDetails!['title']}",
-                  style: GoogleFonts.workSans(
-                    color: Colors.black,
-                    fontSize: widget.scheduleDetails!['title'].length > 20 ? 24 : 30,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    "${widget.scheduleDetails!['title']}",
+                    style: GoogleFonts.workSans(
+                      color: Colors.black,
+                      fontSize:
+                          widget.scheduleDetails!['title'].length > 20
+                              ? 24
+                              : 30,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 10),
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                   decoration: BoxDecoration(
                     color:
-                        widget.scheduleDetails!['status_id'] == 1
+                        missedDeadline
+                            ? mainColor
+                            : widget.scheduleDetails!['status_id'] == 1
                             ? red
                             : widget.scheduleDetails!['status_id'] == 2
                             ? orange
                             : green,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    widget.scheduleDetails!['status_id'] == 1
+                    missedDeadline
+                        ? "Missed"
+                        : widget.scheduleDetails!['status_id'] == 1
                         ? "Not Started"
                         : widget.scheduleDetails!['status_id'] == 2
                         ? "In Progress"
@@ -157,7 +256,7 @@ class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
                     style: GoogleFonts.workSans(
                       color: Colors.white,
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -251,44 +350,75 @@ class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
                 ),
               ],
             ),
+
             Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Column(
               children: [
-                if (widget.scheduleDetails!['status_id'] == 1)
-                  ElevatedButton(
-                    onPressed: () {
-                      updateSchedPending(
-                        "You started to do the task! Stay focused and be mindful of the deadline.",
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(backgroundColor: mainColor),
-                    child: Text(
-                      'Do this Task',
-                      style: GoogleFonts.workSans(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                if (showCountdown && !missedDeadline)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(
+                        "Time Remaining: ${formatDuration(remainingTime)}",
+                        style: GoogleFonts.workSans(
+                          color: red,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                if (widget.scheduleDetails!['status_id'] == 2)
-                  ElevatedButton(
-                    onPressed: () {
-                      updateSchedCompleted(
-                        "Great Job! You completed your task.",
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(backgroundColor: green),
-                    child: Text(
-                      'Mark as done',
-                      style: GoogleFonts.workSans(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (widget.scheduleDetails!['status_id'] == 1)
+                      ElevatedButton(
+                        onPressed: () {
+                          updateSchedPending(
+                            "You started to do the task! Stay focused and be mindful of the deadline.",
+                          );
+                          final box = GetStorage();
+                          final taskId = widget.scheduleDetails!['schedule_id'];
+                          box.write(
+                            "task_$taskId",
+                            DateTime.now().toIso8601String(),
+                          );
+
+                          startCountdownToDeadline();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: mainColor,
+                        ),
+                        child: Text(
+                          'Do this Task',
+                          style: GoogleFonts.workSans(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    if (!missedDeadline &&
+                        widget.scheduleDetails!['status_id'] == 2)
+                      ElevatedButton(
+                        onPressed: () {
+                          updateSchedCompleted(
+                            "Great Job! You completed your task.",
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(backgroundColor: green),
+                        child: Text(
+                          'Mark as done',
+                          style: GoogleFonts.workSans(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ],
             ),
             SizedBox(height: 50),
@@ -296,5 +426,12 @@ class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
         ),
       ),
     );
+  }
+
+  String formatDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    final seconds = duration.inSeconds.remainder(60);
+    return "$hours hrs $minutes min $seconds sec";
   }
 }
