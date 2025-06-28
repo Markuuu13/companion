@@ -242,7 +242,11 @@ class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
                             ? red
                             : widget.scheduleDetails!['status_id'] == 2
                             ? orange
-                            : green,
+                            : widget.scheduleDetails!['status_id'] == 3
+                            ? green
+                            : widget.scheduleDetails!['status_id'] == 4
+                            ? mainColor
+                            : Colors.grey,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -252,7 +256,11 @@ class _TodayScheduleDetailsState extends State<TodayScheduleDetails> {
                         ? "Not Started"
                         : widget.scheduleDetails!['status_id'] == 2
                         ? "In Progress"
-                        : "Completed",
+                        : widget.scheduleDetails!['status_id'] == 3
+                        ? "Completed"
+                        : widget.scheduleDetails!['status_id'] == 4
+                        ? "Missed"
+                        : "Unknown",
                     style: GoogleFonts.workSans(
                       color: Colors.white,
                       fontSize: 16,

@@ -16,28 +16,28 @@ class DateGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (incomingSchedules == null || incomingSchedules!.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              'assets/icons/no-schedule.webp',
-              height: 100,
-              width: 200,
-            ),
-            Text(
-              'No Incoming Schedules',
-              style: GoogleFonts.workSans(
-                color: Colors.grey,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+    // if (incomingSchedules == null || incomingSchedules!.isEmpty) {
+    //   return Center(
+    //     child: Column(
+    //       mainAxisSize: MainAxisSize.min,
+    //       children: [
+    //         Image.asset(
+    //           'assets/icons/no-schedule.webp',
+    //           height: 100,
+    //           width: 200,
+    //         ),
+    //         Text(
+    //           'No Incoming Schedules',
+    //           style: GoogleFonts.workSans(
+    //             color: Colors.grey,
+    //             fontSize: 14,
+    //             fontWeight: FontWeight.w600,
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
 
     final Set<DateTime> uniqueDates =
         incomingSchedules!
@@ -63,57 +63,54 @@ class DateGrid extends StatelessWidget {
       itemBuilder: (context, index) {
         final date = dateList[index];
 
-        return Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: GestureDetector(
-            onTap:
-                () => Get.to(
-                  () => ViewIncomingSchedules(
-                    date: date,
-                    incomingSchedules: incomingSchedules,
-                    onDataChanged: onDataChanged,
+        return GestureDetector(
+          onTap:
+              () => Get.to(
+                () => ViewIncomingSchedules(
+                  date: date,
+                  incomingSchedules: incomingSchedules,
+                  onDataChanged: onDataChanged,
+                ),
+              ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(
+                FontAwesomeIcons.solidCalendar,
+                size: 80,
+                color: red,
+                shadows: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 2,
+                    spreadRadius: 2,
+                    offset: Offset(0, 7),
                   ),
-                ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Icon(
-                  FontAwesomeIcons.solidCalendar,
-                  size: 80,
-                  color: red,
-                  shadows: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 2,
-                      spreadRadius: 2,
-                      offset: Offset(0, 7),
-                    ),
-                  ],
-                ),
+                ],
+              ),
 
-                // ClipRRect(
-                //   borderRadius: BorderRadius.circular(15),
-                //   child: Image.asset(
-                //     'assets/icons/calendar_bg.png', // your calendar icon image
-                //     fit: BoxFit.cover,
-                //     width: 200,
-                //     height: 300,
-                //   ),
-                // ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 29),
-                  child: Text(
-                    DateFormat('MMM \nd').format(date),
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.workSans(
-                      fontSize: 13,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
+              // ClipRRect(
+              //   borderRadius: BorderRadius.circular(15),
+              //   child: Image.asset(
+              //     'assets/icons/calendar_bg.png', // your calendar icon image
+              //     fit: BoxFit.cover,
+              //     width: 200,
+              //     height: 300,
+              //   ),
+              // ),
+              Padding(
+                padding: const EdgeInsets.only(top: 29),
+                child: Text(
+                  DateFormat('MMM \nd').format(date),
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.workSans(
+                    fontSize: 13,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

@@ -33,7 +33,7 @@ class _TodaysGridBuilderState extends State<TodaysGridBuilder> {
       itemCount: widget.scheduleTodayData!.length,
       itemBuilder: (context, index) {
         final data = widget.scheduleTodayData![index];
-        print(data['title']);
+        print("${data['title']} ${data['status_id']}");
         return buildPlanTile(
           data: data,
           context: context,
@@ -47,7 +47,9 @@ class _TodaysGridBuilderState extends State<TodaysGridBuilder> {
                   ? orange
                   : data['status_id'] == 3
                   ? green
-                  : Colors.grey,
+                  : data['status_id'] == 4
+                  ? Colors.grey
+                  : blue,
           preferColor: parseColor(data['preferColor']),
           timeScheduled: parseTime(data['dateScheduledTime']),
           onScheduleUpdated: widget.onScheduleUpdated,
