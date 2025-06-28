@@ -242,22 +242,24 @@ class _HomeState extends State<Home> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Padding(
+                                //   padding: const EdgeInsets.symmetric(
+                                //     horizontal: 20,
+                                //   ),
+                                //   child: Text(
+                                //     "Incoming schedules",
+                                //     style: GoogleFonts.workSans(
+                                //       fontSize: 14,
+                                //       color: Colors.black,
+                                //       fontWeight: FontWeight.bold,
+                                //     ),
+                                //   ),
+                                // ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  child: Text(
-                                    "Incoming schedules",
-                                    style: GoogleFonts.workSans(
-                                      fontSize: 14,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 5,
+                                  padding: const EdgeInsets.only(
+                                    top: 5,
+                                    bottom: 5,
+                                    left: 10,
                                   ),
                                   child: SizedBox(
                                     height: 90,
@@ -332,7 +334,7 @@ class _HomeState extends State<Home> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 15), 
+                          SizedBox(height: 15),
                           Expanded(
                             child: Obx(() {
                               if (scheduleController.isLoading.value) {

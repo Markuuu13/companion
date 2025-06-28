@@ -40,11 +40,12 @@ class _EmailSignupState extends State<EmailSignup> {
     String selectedGrade,
     String password,
   ) async {
-    if (passwordController.text.trim() !=
-        confirmPasswordController.text.trim()) {
+    if (emailController.text.trim().isEmpty &&
+        confirmPasswordController.text.trim().isEmpty &&
+        confirmPasswordController.text.trim().isEmpty) {
       if (!isToastVisible) {
         isToastVisible = true;
-        showErrorToast(context, "Password doesn't match!");
+        showErrorToast(context, "All fields are required.");
         Future.delayed(Duration(seconds: 2), () {
           isToastVisible = false;
         });
@@ -56,6 +57,17 @@ class _EmailSignupState extends State<EmailSignup> {
       if (!isToastVisible) {
         isToastVisible = true;
         showErrorToast(context, "Password is required.");
+        Future.delayed(Duration(seconds: 2), () {
+          isToastVisible = false;
+        });
+      }
+      return;
+    }
+    if (passwordController.text.trim() !=
+        confirmPasswordController.text.trim()) {
+      if (!isToastVisible) {
+        isToastVisible = true;
+        showErrorToast(context, "Password doesn't match!");
         Future.delayed(Duration(seconds: 2), () {
           isToastVisible = false;
         });

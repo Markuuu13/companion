@@ -28,8 +28,15 @@ void showSuccessToast(BuildContext context, String message) {
     toastPosition: Position.bottom,
     animationDuration: Duration(milliseconds: 500),
     animationType: AnimationType.fromBottom,
-    title: Text(message, style: GoogleFonts.workSans(color: Colors.black)),
-    iconWidget: Icon(Icons.error, color: Colors.lightGreen),
+    title: Text(
+      message,
+      style: GoogleFonts.workSans(
+        color: Colors.white,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+    iconWidget: Icon(Icons.check_circle_outline, color: Colors.white),
+    backgroundColor: green,
     displayCloseButton: false,
     actionHandler: () {
       print("Action button pressed");
@@ -44,8 +51,15 @@ void showSuccessToastProfile(BuildContext context, String message) {
     toastPosition: Position.top,
     animationDuration: Duration(milliseconds: 500),
     animationType: AnimationType.fromBottom,
-    title: Text(message, style: GoogleFonts.workSans(color: Colors.black)),
-    iconWidget: Icon(Icons.error, color: Colors.lightGreen),
+    title: Text(
+      message,
+      style: GoogleFonts.workSans(
+        color: Colors.white,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+    iconWidget: Icon(Icons.check_circle_outline, color: Colors.white),
+    backgroundColor: green,
     displayCloseButton: false,
     actionHandler: () {
       print("Action button pressed");
@@ -60,8 +74,15 @@ void showErrorToast(BuildContext context, String message) {
     toastPosition: Position.bottom,
     animationDuration: Duration(milliseconds: 500),
     animationType: AnimationType.fromBottom,
-    title: Text(message, style: GoogleFonts.workSans(color: Colors.red)),
-    iconWidget: Icon(Icons.error, color: Colors.red),
+    title: Text(
+      message,
+      style: GoogleFonts.workSans(
+        color: Colors.white,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+    iconWidget: Icon(Icons.error, color: Colors.white),
+    backgroundColor: red,
     displayCloseButton: false,
     actionHandler: () {
       print("Action button pressed");

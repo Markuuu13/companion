@@ -162,6 +162,7 @@ class AuthService {
         return true;
       } else {
         print(jsonDecode(response.body)['message']);
+        showErrorToast(context, jsonDecode(response.body)['message']);
         return false;
       }
     } catch (e) {

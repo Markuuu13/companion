@@ -1,5 +1,6 @@
 import 'package:companion/components/navigation.dart';
 import 'package:companion/constants.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -32,23 +33,33 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void login() async {
-    try {
-      bool isEmpty =
-          username.text.trim().isEmpty ||
-          passwordController.text.trim().isEmpty;
+    bool isEmpty =
+        username.text.trim().isEmpty || passwordController.text.trim().isEmpty;
 
-      if (isEmpty) {
-        if (!isToastVisible) {
-          isToastVisible = true;
+    if (isEmpty) {
+      if (!isToastVisible) {
+        isToastVisible = true;
 
-          showErrorToast(context, "Please fill all fields");
+        showErrorToast(context, "The username and password fields are required.");
 
-          Future.delayed(Duration(seconds: 2), () {
-            isToastVisible = false;
-          });
-        }
-        return;
+        Future.delayed(Duration(seconds: 2), () {
+          isToastVisible = false;
+        });
       }
+      return;
+    }
+    try {
+      // var connectivityResult = await Connectivity().checkConnectivity();
+      // if (connectivityResult == ConnectivityResult.none) {
+      //   if (!isToastVisible) {
+      //     isToastVisible = true;
+      //     showErrorToast(context, "No internet connection.");
+      //     Future.delayed(Duration(seconds: 2), () {
+      //       isToastVisible = false;
+      //     });
+      //   }
+      //   return;
+      // }
 
       bool successLogin = await authService.signIn(
         context: context,
@@ -83,7 +94,16 @@ class _LoginPageState extends State<LoginPage> {
       //   duration: Duration(milliseconds: 600),
       // );
     } catch (e) {
-      print(e.toString());
+      if (!isToastVisible) {
+        isToastVisible = true;
+
+        showErrorToast(context, "Error occured. Please try again later.");
+
+        Future.delayed(Duration(seconds: 2), () {
+          isToastVisible = false;
+        });
+      }
+      return;
     }
   }
 

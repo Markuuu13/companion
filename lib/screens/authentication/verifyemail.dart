@@ -47,7 +47,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
     if (verifyOtp.text.isEmpty) {
       if (!isToastVisible) {
         isToastVisible = true;
-        showErrorToast(context, "Please enter the OTP code to proceed.");
+        showErrorToast(context, "OTP field is required. Check your email and look for the code.");
         Future.delayed(Duration(seconds: 2), () {
           isToastVisible = false;
         });

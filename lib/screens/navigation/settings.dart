@@ -18,6 +18,84 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   bool isSwitched = false;
   final box = GetStorage();
+  void showLogoutPrompt(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          contentPadding: const EdgeInsets.all(20),
+          content: SizedBox(
+            height: 150, // 👈 Custom height
+            width: 300, // 👈 Custom width
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      'assets/icons/app_icon.png',
+                      height: 35,
+                      width: 35,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      'Exit CompAInion?',
+                      style: GoogleFonts.workSans(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  'Do you really want to log out?',
+                  style: GoogleFonts.workSans(fontSize: 16),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        'Cancel',
+                        style: GoogleFonts.workSans(
+                          color: Colors.grey[700],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        final box = GetStorage();
+                        box.remove('userid');
+                        Get.offAll(() => LoginPage());
+                      },
+                      child: Text(
+                        'Logout',
+                        style: GoogleFonts.workSans(
+                          color: red,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,8 +179,7 @@ class _SettingsState extends State<Settings> {
                       ],
                     ),
                     Transform.scale(
-                      scale:
-                          0.9, // 👈 increase or decrease this value (1.0 is normal size)
+                      scale: 0.9,
                       child: Switch(
                         activeColor: mainColor,
                         value: isSwitched,
@@ -126,7 +203,7 @@ class _SettingsState extends State<Settings> {
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(color: Colors.red),
+                decoration: BoxDecoration(color: red),
                 child: Text(
                   "Log Out",
                   style: GoogleFonts.workSans(
@@ -145,61 +222,4 @@ class _SettingsState extends State<Settings> {
   }
 
   //prompt before logging out
-  void showLogoutPrompt(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          contentPadding: const EdgeInsets.all(20),
-          content: SizedBox(
-            height: 150, // 👈 Custom height
-            width: 300, // 👈 Custom width
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Are you sure?',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-                Text(
-                  'Do you really want to log out?',
-                  style: TextStyle(fontSize: 16),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(color: Colors.grey[700]),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        final box = GetStorage();
-                        box.remove('userid');
-                        Get.offAll(() => LoginPage());
-                      },
-                      child: Text(
-                        'Logout',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 }

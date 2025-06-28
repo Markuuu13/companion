@@ -94,37 +94,70 @@ class _ViewIncomingSchedulesState extends State<ViewIncomingSchedules> {
               scheduledDate.day == widget.date.day;
         }).toList();
 
+    var width = MediaQuery.of(context).size.width * 0.5;
+    var height = MediaQuery.of(context).size.height * 0.2;
     return Scaffold(
       appBar: AppBar(),
       body:
           filteredSchedules.isEmpty
-              ? Center(child: Text('No schedules found for ${widget.date}'))
+              ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/icons/no-schedule.webp',
+                      width: width,
+                      height: height,
+                    ),
+                    Text(
+                      'No schedule found. Go back to home',
+                      style: GoogleFonts.workSans(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 100),
+                  ],
+                ),
+              )
               : Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: const EdgeInsets.all(8.0),
                       child: Row(
                         children: [
-                          Icon(
-                            FontAwesomeIcons.solidCalendar,
-                            color: red,
-                            size: 30,
-                          ),
+                          Icon(Icons.calendar_today_rounded),
                           SizedBox(width: 10),
-                          Text(
-                            DateFormat('MMMM dd yyyy').format(widget.date),
-                            style: GoogleFonts.workSans(
-                              fontSize: 20,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Incoming Schedule",
+                                style: GoogleFonts.workSans(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+
+                              Text(
+                                DateFormat('MMMM dd yyyy').format(widget.date),
+                                style: GoogleFonts.workSans(
+                                  fontSize: 15,
+                                  color: Colors.black38,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
+
                     SizedBox(height: 20),
                     Row(
                       children: [
@@ -138,9 +171,9 @@ class _ViewIncomingSchedulesState extends State<ViewIncomingSchedules> {
                           child: Text(
                             isClickedSelect ? "Cancel" : "Select",
                             style: GoogleFonts.workSans(
-                              fontSize: 15,
+                              fontSize: 13,
                               color: Colors.black,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
