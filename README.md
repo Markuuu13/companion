@@ -1,6 +1,6 @@
 # companion
 
-A new Flutter project.
+An AI-powered mobile application that helps student to plan their task and automatically set a schedule based on task priority level.
 
 ## Getting Started
 
